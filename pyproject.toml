@@ -1,0 +1,186 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "science-card-improvement"
+version = "1.0.0"
+description = "A comprehensive toolkit for discovering, assessing, and improving dataset and model cards on Hugging Face"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Science Card Improvement Team"},
+]
+keywords = ["huggingface", "science", "datasets", "models", "documentation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    "huggingface-hub>=0.19.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+    "requests>=2.28.0",
+    "jinja2>=3.0.0",
+    "PyYAML>=6.0",
+    "pandas>=1.5.0",
+    "numpy>=1.24.0",
+    "tenacity>=8.0.0",
+    "httpx>=0.24.0",
+    "structlog>=23.0.0",
+    "prometheus-client>=0.17.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.11.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+    "pre-commit>=3.3.0",
+    "ruff>=0.0.280",
+    "ipdb>=0.13.13",
+]
+
+test = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.11.0",
+    "faker>=19.0.0",
+    "factory-boy>=3.3.0",
+]
+
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "sphinx-autodoc-typehints>=1.24.0",
+    "myst-parser>=2.0.0",
+]
+
+[project.scripts]
+sci-discover = "src.cli.discover:main"
+sci-assess = "src.cli.assess:main"
+sci-generate = "src.cli.generate:main"
+sci-submit = "src.cli.submit:main"
+sci-monitor = "src.cli.monitor:main"
+
+[project.urls]
+Homepage = "https://github.com/VontariusF/science-card-improvement"
+Documentation = "https://science-card-improvement.readthedocs.io"
+Repository = "https://github.com/VontariusF/science-card-improvement.git"
+Issues = "https://github.com/VontariusF/science-card-improvement/issues"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+packages = ["src", "scripts", "utils"]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.yaml", "*.yml", "*.md", "*.txt"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+  | __pycache__
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+check_untyped_defs = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--cov=src",
+    "--cov-branch",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Tests that take > 1s",
+    "requires_hf_token: Tests that require Hugging Face token",
+]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "C90", "I", "N", "B", "S", "T", "A", "C4", "DTZ", "EM", "ISC", "ICN", "G", "INP", "PIE", "T20", "PT", "RET", "SIM", "TID", "TCH", "ARG", "PTH", "PD", "PGH", "PL", "TRY", "NPY", "RUF"]
+ignore = ["E501", "B008", "C901", "S101"]
+fixable = ["ALL"]
+unfixable = []
+target-version = "py38"
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101", "S106"]
+"scripts/*" = ["T201"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = ["*/tests/*", "*/test_*.py", "*/__init__.py"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"

@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  scicard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: science-card-improvement:latest
+    container_name: scicard
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=/app
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+      - ./config:/app/config
+    networks:
+      - scicard-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: scicard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - scicard-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: scicard-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - scicard-network
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: scicard-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=redis-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - scicard-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+networks:
+  scicard-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  prometheus-data:
+  grafana-data:
