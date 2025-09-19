@@ -2,7 +2,7 @@
 
 A comprehensive toolkit for discovering, assessing, and improving dataset and model cards on Hugging Face, with a focus on scientific datasets and models.
 
-## ÌæØ Project Goals
+## Project Goals
 
 - **Discover** science-related datasets and models on Hugging Face that need better documentation
 - **Assess** card quality using automated scoring and manual review
@@ -10,7 +10,7 @@ A comprehensive toolkit for discovering, assessing, and improving dataset and mo
 - **Tag** repositories with appropriate tags (`huggingscience`, `science`, domain-specific tags)
 - **Contribute** improvements via automated PRs and community collaboration
 
-## Ì∫Ä Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies
@@ -32,7 +32,7 @@ python scripts/generate_card.py --repo-id arcinstitute/opengenome2 --type datase
 python scripts/create_pr.py --repo-id arcinstitute/opengenome2 --card-file improved_card.md
 ```
 
-## Ì≥Å Repository Structure
+## Repository Structure
 
 ```
 ‚îú‚îÄ‚îÄ scripts/                    # Main automation scripts
@@ -62,7 +62,7 @@ python scripts/create_pr.py --repo-id arcinstitute/opengenome2 --card-file impro
     ‚îî‚îÄ‚îÄ contributing.md              # How to contribute
 ```
 
-## Ì¥ç Discovery Process
+## Discovery Process
 
 ### 1. Automated Discovery
 - Search using science-related keywords
@@ -82,7 +82,7 @@ python scripts/create_pr.py --repo-id arcinstitute/opengenome2 --card-file impro
 - **Score 6-8**: Good but could be enhanced
 - **Score 9-10**: Excellent card
 
-## Ì≥ù Card Templates
+## Card Templates
 
 ### Dataset Card Template
 - **Title & Description**: Clear, concise summary
@@ -104,7 +104,7 @@ python scripts/create_pr.py --repo-id arcinstitute/opengenome2 --card-file impro
 - **Citation**: Proper academic citation
 - **License**: Model licensing information
 
-## Ìø∑Ô∏è Tagging Strategy
+## Tagging Strategy
 
 ### Core Tags
 - `huggingscience`: Main project tag
@@ -119,7 +119,7 @@ python scripts/create_pr.py --repo-id arcinstitute/opengenome2 --card-file impro
 - **Medicine**: `medical`, `clinical`, `healthcare`
 - **Environment**: `climate`, `ecology`, `environmental`
 
-## Ì¥ù Contributing
+## Contributing
 
 1. **Fork** the repository
 2. **Create** a feature branch
@@ -128,7 +128,7 @@ python scripts/create_pr.py --repo-id arcinstitute/opengenome2 --card-file impro
 5. **Submit** PRs with your improvements
 6. **Coordinate** with maintainers for merging
 
-## Ì≥ä Example Workflow
+## Example Workflow
 
 ```python
 from utils.hf_api import HFApiClient
@@ -160,14 +160,14 @@ for dataset in datasets:
         print(f"Created PR for {dataset.id}: {pr_url}")
 ```
 
-## ÌæØ Success Metrics
+## Success Metrics
 
 - **Cards Improved**: Number of repositories with enhanced cards
 - **PRs Merged**: Successful contributions to the community
 - **Tags Applied**: Proper tagging of science repositories
 - **Community Engagement**: Discussions and collaborations
 
-## Ì≥ö Resources
+## Resources
 
 - [Hugging Face Dataset Card Guide](https://huggingface.co/docs/datasets/en/dataset_card)
 - [Hugging Face Model Card Guide](https://huggingface.co/docs/hub/model-cards)
@@ -181,11 +181,11 @@ for dataset in datasets:
 - **Community guidelines**: Follow Hugging Face community standards
 - **Attribution**: Properly credit original authors and sources
 
-## Ì≥Ñ License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Ìºü Getting Started
+## Getting Started
 
 To get started with this project:
 
@@ -212,7 +212,7 @@ To get started with this project:
 
 5. **Start contributing** to improve science dataset and model cards!
 
-## Ì≥û Support
+## Support
 
 For questions, issues, or contributions:
 

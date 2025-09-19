@@ -100,31 +100,30 @@ class RepositoryMetadata:
 
     def calculate_priority_score(self) -> float:
         """Calculate priority score for improvement based on multiple factors."""
-        score = 0.0
+        download_score = min(15.0, self.downloads / 500)
+        like_score = min(10.0, self.likes / 10)
+        view_score = min(5.0, self.views / 20000)
+        popularity = download_score + like_score + view_score
 
-        # Popularity factor (max 30 points)
-        popularity = min(30, (self.downloads / 1000) + (self.likes * 2) + (self.views / 10000))
-        score += popularity
-
-        # Documentation quality factor (max 40 points)
         if not self.has_readme:
-            score += 40  # Highest priority for missing README
+            documentation = 40.0
         elif self.readme_length < 300:
-            score += 30  # High priority for very short README
+            documentation = 25.0
         elif self.readme_length < 1000:
-            score += 20  # Medium priority for short README
+            documentation = 15.0
         else:
-            score += max(0, 10 - self.readme_quality_score * 10)
+            documentation = max(0.0, 10.0 - self.readme_quality_score * 10.0)
 
-        # Completeness factor (max 30 points)
-        if not self.license:
-            score += 10
-        if not self.tags or len(self.tags) < 3:
-            score += 10
+        completeness = 0.0
+        if self.license is None or str(self.license).strip() == "":
+            completeness += 5.0
+        if not self.tags:
+            completeness += 5.0
         if self.issues:
-            score += min(10, len(self.issues) * 2)
+            completeness += min(10.0, len(self.issues) * 2.0)
 
-        self.priority_score = min(100, score)
+        score = popularity + documentation + completeness
+        self.priority_score = min(100.0, score)
         return self.priority_score
 
 
@@ -168,16 +167,25 @@ class RepositoryDiscovery(LoggerMixin):
         if keywords_file.exists():
             with open(keywords_file, "r") as f:
                 data = json.load(f)
-                return data.get("keywords", [])
-        else:
-            # Default keywords
-            return [
-                "science", "biology", "genomics", "proteomics", "chemistry",
-                "physics", "astronomy", "medicine", "medical", "clinical",
-                "healthcare", "neuroscience", "ecology", "climate", "environmental",
-                "computational-biology", "bioinformatics", "drug-discovery",
-                "molecular", "genetics", "epidemiology", "pharmacology",
-            ]
+            if isinstance(data, dict):
+                keywords = data.get("keywords", [])
+            elif isinstance(data, list):
+                keywords = data
+            else:
+                keywords = []
+
+            keywords = [kw for kw in keywords if isinstance(kw, str)]
+            if keywords:
+                return keywords
+
+        # Default keywords
+        return [
+            "science", "biology", "genomics", "proteomics", "chemistry",
+            "physics", "astronomy", "medicine", "medical", "clinical",
+            "healthcare", "neuroscience", "ecology", "climate", "environmental",
+            "computational-biology", "bioinformatics", "drug-discovery",
+            "molecular", "genetics", "epidemiology", "pharmacology",
+        ]
 
     def _load_domain_tags(self) -> Dict[str, List[str]]:
         """Load domain-specific tags from configuration."""

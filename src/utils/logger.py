@@ -1,9 +1,9 @@
 """Structured logging configuration with multiple output formats."""
-
 import json
 import logging
 import sys
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -64,7 +64,7 @@ def setup_logging(
         file_path = log_file or settings.logs_dir / f"{settings.app_name.lower().replace(' ', '_')}.log"
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        file_handler = logging.handlers.RotatingFileHandler(
+        file_handler = RotatingFileHandler(
             filename=str(file_path),
             maxBytes=10 * 1024 * 1024,  # 10MB
             backupCount=5,
