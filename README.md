@@ -174,7 +174,7 @@ for dataset in datasets:
 - [Example: Poor Card (Arc Institute)](https://huggingface.co/datasets/arcinstitute/opengenome2)
 - [Example: Good Card (Tahoe-100M)](https://huggingface.co/datasets/tahoebio/Tahoe-100M)
 
-## ⚠️ Important Notes
+## Important Notes
 
 - **Respect maintainers**: Always coordinate with repository maintainers
 - **Quality over quantity**: Focus on meaningful improvements

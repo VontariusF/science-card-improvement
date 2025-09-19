@@ -1,10 +1,10 @@
-# 📊 Baseline Comparison System
+# Baseline Comparison System
 
 ## Overview
 
 The Science Card Improvement toolkit uses a sophisticated baseline comparison system that learns from exemplary and poor documentation examples to provide intelligent improvement suggestions. **All changes require human review and confirmation before any submission.**
 
-## 🎯 Reference Baselines
+## Reference Baselines
 
 ### Gold Standard Examples (A+ Quality)
 - **[tahoebio/Tahoe-100M](https://huggingface.co/datasets/tahoebio/Tahoe-100M)** - Exemplary dataset card with comprehensive documentation
@@ -14,7 +14,7 @@ The Science Card Improvement toolkit uses a sophisticated baseline comparison sy
 ### Poor Examples (Needs Improvement)
 - **[arcinstitute/opengenome2](https://huggingface.co/datasets/arcinstitute/opengenome2)** - Bone dry dataset card that needs significant improvement
 
-## 🔄 How It Works
+## How It Works
 
 ### 1. Baseline Analysis
 The system first analyzes both good and bad examples to understand:
@@ -65,7 +65,7 @@ if approved:
     # Manual submission required
 ```
 
-## 📈 Quality Scoring System
+## Quality Scoring System
 
 The system scores cards on a 0-100 scale based on:
 
@@ -83,7 +83,7 @@ The system scores cards on a 0-100 scale based on:
 - **61-80**: Good documentation
 - **81-100**: Excellent (like tahoebio/Tahoe-100M)
 
-## 🛡️ Safety Features
+## Safety Features
 
 ### Never Auto-Push
 The system includes multiple safeguards:
@@ -106,7 +106,7 @@ sci-review --interactive
 # D - Download for external review
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Required Environment Variables
 ```bash
@@ -138,7 +138,7 @@ export INTERACTIVE_REVIEW=true  # Force interactive mode
 export EXPORT_PROPOSALS=true  # Save all proposals to disk
 ```
 
-## 📋 Typical Workflow
+## Typical Workflow
 
 ### Step 1: Analyze Repository
 ```bash
@@ -175,7 +175,7 @@ sci-submit --draft-file pr_draft_123.json \
            --confirm  # Still asks for confirmation
 ```
 
-## 📊 Comparison Report Example
+## Comparison Report Example
 
 When comparing a repository with baselines, you get:
 
@@ -193,11 +193,11 @@ When comparing a repository with baselines, you get:
 - Length Difference: -15,762 characters
 
 ## Priority Improvements
-1. 🔴 HIGH: Add comprehensive description section
-2. 🔴 HIGH: Include usage examples with code
-3. 🔴 HIGH: Add license and citation information
-4. 🟡 MEDIUM: Document dataset structure
-5. 🟡 MEDIUM: Add data collection methodology
+1. HIGH: Add comprehensive description section
+2. HIGH: Include usage examples with code
+3. HIGH: Add license and citation information
+4. MEDIUM: Document dataset structure
+5. MEDIUM: Add data collection methodology
 
 ## Estimated Impact
 - Current percentile: Bottom 10%
@@ -205,7 +205,7 @@ When comparing a repository with baselines, you get:
 - Quality score increase: +45-60 points
 ```
 
-## ⚠️ Important Notes
+## Important Notes
 
 1. **Human Review is Mandatory**: The system will never bypass human review
 2. **No Auto-Push**: Changes are never automatically pushed to repositories
@@ -213,7 +213,7 @@ When comparing a repository with baselines, you get:
 4. **Quality Over Quantity**: Focus on meaningful improvements
 5. **Test Locally First**: Always test changes before submission
 
-## 🔍 Monitoring & Auditing
+## Monitoring & Auditing
 
 All actions are logged and audited:
 - Proposals saved to `output/proposals/`
@@ -221,7 +221,7 @@ All actions are logged and audited:
 - PR drafts saved separately from submissions
 - Complete audit trail for compliance
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Hugging Face Dataset Card Guide](https://huggingface.co/docs/datasets/en/dataset_card)
 - [Model Card Best Practices](https://huggingface.co/docs/hub/model-cards)

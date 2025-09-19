@@ -1,4 +1,4 @@
-# 🔬 Science Card Improvement Toolkit
+# Science Card Improvement Toolkit
 
 [![CI Pipeline](https://github.com/VontariusF/science-card-improvement/workflows/CI%20Pipeline/badge.svg)](https://github.com/VontariusF/science-card-improvement/actions)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -6,15 +6,15 @@
 
 **An intelligent system that analyzes and improves Hugging Face dataset/model documentation by learning from the best (and worst) examples.**
 
-## 🎯 The Problem & Solution
+## The Problem & Solution
 
 ### The Problem
 Many valuable scientific datasets on Hugging Face have minimal documentation. For example:
-- ❌ **[arcinstitute/opengenome2](https://huggingface.co/datasets/arcinstitute/opengenome2)** - Amazing dataset, bone-dry documentation
+- **[arcinstitute/opengenome2](https://huggingface.co/datasets/arcinstitute/opengenome2)** - Amazing dataset, bone-dry documentation
 
 ### The Solution
 Learn from exemplary documentation and provide intelligent improvements:
-- ✅ **[tahoebio/Tahoe-100M](https://huggingface.co/datasets/tahoebio/Tahoe-100M)** - Gold standard documentation
+- **[tahoebio/Tahoe-100M](https://huggingface.co/datasets/tahoebio/Tahoe-100M)** - Gold standard documentation
 
 Our system automatically:
 1. **Analyzes** repositories against known good/bad examples
@@ -23,7 +23,7 @@ Our system automatically:
 4. **Requires** human review before ANY changes
 5. **Never** automatically pushes changes
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # 1. Clone and setup
@@ -48,9 +48,9 @@ sci-review --interactive
 sci-draft --approved-only
 ```
 
-## 🛡️ Safety & Ethics
+## Safety & Ethics
 
-### ⚠️ IMPORTANT: Human Review Required
+### IMPORTANT: Human Review Required
 
 This system **NEVER** automatically pushes changes. Every improvement requires:
 1. **Human review** of proposed changes
@@ -73,7 +73,7 @@ if approved:
     # Still requires manual submission
 ```
 
-## 📊 How Baseline Comparison Works
+## How Baseline Comparison Works
 
 ### 1. Learning from Examples
 
@@ -118,7 +118,7 @@ sci-compare --target arcinstitute/opengenome2 \
 # Improvement Potential: +45-60 points with suggested changes
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Required Environment Variables
 ```bash
@@ -146,7 +146,7 @@ export DISCOVERY_MAX_WORKERS=10     # Parallel processing
 export CACHE_TTL=3600               # Cache duration (seconds)
 ```
 
-## 📋 Typical Workflow
+## Typical Workflow
 
 ### Step 1: Discover Repositories Needing Help
 ```bash
@@ -206,7 +206,7 @@ sci-submit --draft pr_draft.json \
 # Even this command asks for final confirmation!
 ```
 
-## 📈 Success Metrics
+## Success Metrics
 
 ### Quality Improvements
 - Average score increase: +40-60 points
@@ -229,7 +229,7 @@ sci-submit --draft pr_draft.json \
 - Complete usage examples
 - Proper citations
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 src/
@@ -243,7 +243,7 @@ src/
 └── validators/               # Input validation
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -259,7 +259,7 @@ pytest tests/unit/test_human_review.py
 pytest tests/integration/
 ```
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -267,7 +267,7 @@ pytest tests/integration/
 4. Ensure all safety checks pass
 5. Submit a pull request
 
-## ⚠️ Important Limitations
+## Important Limitations
 
 1. **No Automatic Pushing**: All changes require human review
 2. **Respect Maintainers**: Always coordinate with repo owners
@@ -275,18 +275,18 @@ pytest tests/integration/
 4. **Factual Accuracy**: AI suggestions need human verification
 5. **License Compliance**: Respect original licenses
 
-## 📚 Resources
+## Resources
 
 - [Baseline Comparison Details](BASELINE_COMPARISON.md)
 - [Gold Standard Example](https://huggingface.co/datasets/tahoebio/Tahoe-100M)
 - [Poor Example](https://huggingface.co/datasets/arcinstitute/opengenome2)
 - [HF Dataset Card Guide](https://huggingface.co/docs/datasets/en/dataset_card)
 
-## 📄 License
+## License
 
 MIT License - See [LICENSE](LICENSE) for details
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Tahoe Bio** for the excellent Tahoe-100M documentation example
 - **Arc Institute** for the valuable opengenome2 dataset (documentation improvements coming!)

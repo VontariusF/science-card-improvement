@@ -1,7 +1,7 @@
 """Input validation for API requests and data processing."""
 
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, Field, validator, HttpUrl
 

@@ -202,8 +202,8 @@ def show_examples(poor_example: str, good_example: str):
     console.print(
         Panel(
             "[bold]Documentation Quality Examples[/bold]\n\n"
-            f"❌ Poor Example: {poor_example}\n"
-            f"✅ Good Example: {good_example}",
+            f"Poor Example: {poor_example}\n"
+            f"Good Example: {good_example}",
             border_style="cyan",
         )
     )
@@ -224,8 +224,8 @@ def show_examples(poor_example: str, good_example: str):
         )
 
         table.add_column("Metric", style="cyan", no_wrap=True)
-        table.add_column(f"❌ {poor_example}", style="red")
-        table.add_column(f"✅ {good_example}", style="green")
+        table.add_column(f"{poor_example}", style="red")
+        table.add_column(f"{good_example}", style="green")
 
         # Add metrics
         table.add_row(
@@ -248,14 +248,14 @@ def show_examples(poor_example: str, good_example: str):
 
         table.add_row(
             "Has Code Examples",
-            "❌" if not any(s.has_code_examples for s in poor_analysis.sections) else "✅",
-            "❌" if not any(s.has_code_examples for s in good_analysis.sections) else "✅",
+            "No" if not any(s.has_code_examples for s in poor_analysis.sections) else "Yes",
+            "No" if not any(s.has_code_examples for s in good_analysis.sections) else "Yes",
         )
 
         table.add_row(
             "Has Citations",
-            "❌" if not any(s.has_citations for s in poor_analysis.sections) else "✅",
-            "❌" if not any(s.has_citations for s in good_analysis.sections) else "✅",
+            "No" if not any(s.has_citations for s in poor_analysis.sections) else "Yes",
+            "No" if not any(s.has_citations for s in good_analysis.sections) else "Yes",
         )
 
         table.add_row(
@@ -281,12 +281,12 @@ def show_examples(poor_example: str, good_example: str):
         # Show what makes the good example good
         console.print("\n[bold green]What makes {good_example} excellent:[/bold green]")
         for strength in good_analysis.strengths[:5]:
-            console.print(f"  ✅ {strength}")
+            console.print(f"  {strength}")
 
         # Show what's wrong with the poor example
         console.print(f"\n[bold red]What {poor_example} is missing:[/bold red]")
         for issue in poor_analysis.missing_elements[:5]:
-            console.print(f"  ❌ {issue}")
+            console.print(f"  {issue}")
 
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
@@ -309,24 +309,24 @@ def baselines(list_only: bool):
     if list_only:
         console.print("[bold]Gold Standard Repositories:[/bold]")
         for repo in analyzer.GOLD_STANDARD_REPOS:
-            console.print(f"  ✅ {repo}")
+            console.print(f"  {repo}")
 
         console.print("\n[bold]Poor Example Repositories:[/bold]")
         for repo in analyzer.POOR_EXAMPLE_REPOS:
-            console.print(f"  ❌ {repo}")
+            console.print(f"  {repo}")
     else:
         # Show detailed analysis of baselines
         console.print("[bold]Analyzing baseline repositories...[/bold]\n")
 
         for repo_id, analysis in analyzer.gold_standards.items():
-            console.print(f"✅ [bold green]{repo_id}[/bold green]")
+            console.print(f"[bold green]{repo_id}[/bold green]")
             console.print(f"   Score: {analysis.quality_score:.1f}/100")
             console.print(f"   Sections: {len(analysis.sections)}")
             console.print(f"   Strengths: {', '.join(analysis.strengths[:3])}")
             console.print()
 
         for repo_id, analysis in analyzer.poor_examples.items():
-            console.print(f"❌ [bold red]{repo_id}[/bold red]")
+            console.print(f"[bold red]{repo_id}[/bold red]")
             console.print(f"   Score: {analysis.quality_score:.1f}/100")
             console.print(f"   Issues: {', '.join(analysis.weaknesses[:3])}")
             console.print()
@@ -350,18 +350,18 @@ def display_comparison_results(comparison: dict, show_suggestions: bool):
     if target["strengths"]:
         console.print("\n[bold green]Strengths:[/bold green]")
         for strength in target["strengths"]:
-            console.print(f"  ✅ {strength}")
+            console.print(f"  {strength}")
 
     if target["weaknesses"]:
         console.print("\n[bold red]Weaknesses:[/bold red]")
         for weakness in target["weaknesses"]:
-            console.print(f"  ❌ {weakness}")
+            console.print(f"  {weakness}")
 
     # Recommendations
     if show_suggestions and comparison["recommendations"]:
         console.print("\n[bold yellow]Priority Improvements:[/bold yellow]")
         for rec in comparison["recommendations"]:
-            emoji = "🔴" if rec["priority"] == "HIGH" else "🟡"
+            emoji = "HIGH" if rec["priority"] == "HIGH" else "MEDIUM"
             console.print(f"  {emoji} {rec['action']}")
             console.print(f"      Reference: {rec['reference']}")
 
@@ -395,14 +395,14 @@ def display_analysis_results(analysis):
     # Show sections
     console.print("\n[bold]Sections Found:[/bold]")
     for section in analysis.sections[:10]:
-        quality = "✅" if section.quality_score > 0.5 else "⚠️"
+        quality = "Good" if section.quality_score > 0.5 else "Needs Work"
         console.print(f"  {quality} {section.name} ({section.word_count} words)")
 
     # Show issues
     if analysis.missing_elements:
         console.print("\n[bold yellow]Missing Elements:[/bold yellow]")
         for element in analysis.missing_elements:
-            console.print(f"  ⚠️ {element}")
+            console.print(f"  {element}")
 
     # Show suggestions
     if analysis.improvement_suggestions:

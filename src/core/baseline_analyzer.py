@@ -166,9 +166,10 @@ class BaselineAnalyzer(LoggerMixin):
         # Try to get from cache
         if self.cache:
             cache_key = f"analysis:{repo_id}:{repo_type}"
-            cached = self.cache.get(cache_key)
-            if cached:
-                return CardAnalysis(**cached)
+            # Note: Synchronous cache access for now
+            # cached = self.cache.get(cache_key)
+            # if cached:
+            #     return CardAnalysis(**cached)
 
         try:
             # Download README
@@ -217,7 +218,9 @@ class BaselineAnalyzer(LoggerMixin):
 
         # Cache the analysis
         if self.cache:
-            self.cache.set(cache_key, analysis.to_dict(), ttl=86400)  # 24 hours
+            # Note: Synchronous cache access for now
+            # self.cache.set(cache_key, analysis.to_dict(), ttl=86400)  # 24 hours
+            pass
 
         return analysis
 
@@ -661,21 +664,21 @@ Generated: {datetime.utcnow().isoformat()}
 
 """
         for strength in comparison["target_analysis"]["strengths"]:
-            report += f"- ✅ {strength}\n"
+            report += f"- {strength}\n"
 
         report += """
 ## Weaknesses
 
 """
         for weakness in comparison["target_analysis"]["weaknesses"]:
-            report += f"- ❌ {weakness}\n"
+            report += f"- {weakness}\n"
 
         report += """
 ## Priority Improvements
 
 """
         for i, rec in enumerate(comparison["recommendations"], 1):
-            emoji = "🔴" if rec["priority"] == "HIGH" else "🟡"
+            emoji = "HIGH" if rec["priority"] == "HIGH" else "MEDIUM"
             report += f"""
 {i}. {emoji} **{rec['action']}**
    - Reference: {rec['reference']}

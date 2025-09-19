@@ -163,14 +163,14 @@ class HumanReviewSystem(LoggerMixin):
         if proposal.improvements:
             self.console.print("[bold green]Improvements:[/bold green]")
             for imp in proposal.improvements:
-                self.console.print(f"  ✅ {imp}")
+                self.console.print(f"  {imp}")
             self.console.print()
 
         # Show risks
         if proposal.risks:
             self.console.print("[bold yellow]Potential Risks:[/bold yellow]")
             for risk in proposal.risks:
-                self.console.print(f"  ⚠️ {risk}")
+                self.console.print(f"  {risk}")
             self.console.print()
 
         # Show content or diff
@@ -202,7 +202,7 @@ class HumanReviewSystem(LoggerMixin):
                 notes = Prompt.ask("Add review notes (optional)", default="")
                 proposal.reviewer_notes = notes
                 self.reviewed_proposals.append(proposal)
-                self.console.print("[green]✅ Proposal approved![/green]")
+                self.console.print("[green]Proposal approved![/green]")
                 return True
 
             elif choice == "e":
@@ -220,7 +220,7 @@ class HumanReviewSystem(LoggerMixin):
                 reason = Prompt.ask("Reason for rejection")
                 proposal.reviewer_notes = f"Rejected: {reason}"
                 self.reviewed_proposals.append(proposal)
-                self.console.print("[red]❌ Proposal rejected.[/red]")
+                self.console.print("[red]Proposal rejected.[/red]")
                 return False
 
             elif choice == "s":
@@ -369,7 +369,7 @@ class HumanReviewSystem(LoggerMixin):
         self.console.print(
             Panel(
                 f"[green]PR draft created and saved to:[/green]\n{draft_path}\n\n"
-                "[yellow]⚠️ This draft has NOT been submitted.[/yellow]\n"
+                "[yellow]This draft has NOT been submitted.[/yellow]\n"
                 "To submit, use: sci-submit --draft-file <path>",
                 title="PR Draft Created",
                 border_style="green",
@@ -392,7 +392,7 @@ This PR improves the {proposal.repo_type} card documentation based on automated 
 
 """
         for imp in proposal.improvements:
-            description += f"- ✅ {imp}\n"
+            description += f"- {imp}\n"
 
         if proposal.reviewer_notes:
             description += f"\n## Review Notes\n\n{proposal.reviewer_notes}\n"
