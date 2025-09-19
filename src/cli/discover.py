@@ -34,7 +34,7 @@ logger = setup_logging()
 @click.option(
     "--limit",
     type=click.IntRange(1, 1000),
-    default=100,
+    default=200,
     help="Maximum number of repositories to return",
 )
 @click.option(
@@ -272,7 +272,7 @@ def display_results_table(repositories):
 
     # Add rows (limit display to 20 for readability)
     for repo in repositories[:20]:
-        readme_status = "✓" if repo.has_readme else "✗"
+        readme_status = "YES" if repo.has_readme else "NO"
         if repo.has_readme:
             readme_status += f" ({repo.readme_length} chars)"
 
@@ -324,19 +324,19 @@ def display_summary(repositories):
     # Create summary panel
     summary = f"""
 [bold]Repository Summary[/bold]
-├── Total: {total}
-├── Datasets: {datasets}
-├── Models: {models}
-└── Need Improvement: {need_improvement} ({need_improvement/total:.0%})
+- Total: {total}
+- Datasets: {datasets}
+- Models: {models}
+- Need Improvement: {need_improvement} ({need_improvement/total:.0%})
 
 [bold]Documentation Status[/bold]
-├── Missing README: {no_readme} ({no_readme/total:.0%})
-├── Short README: {short_readme} ({short_readme/total:.0%})
-└── Average Priority: {avg_priority:.1f}/100
+- Missing README: {no_readme} ({no_readme/total:.0%})
+- Short README: {short_readme} ({short_readme/total:.0%})
+- Average Priority: {avg_priority:.1f}/100
 
 [bold]Popularity Metrics[/bold]
-├── Average Downloads: {avg_downloads:.0f}
-└── Average Likes: {avg_likes:.0f}
+- Average Downloads: {avg_downloads:.0f}
+- Average Likes: {avg_likes:.0f}
     """
 
     console.print(Panel(summary.strip(), title="Summary", border_style="green"))
@@ -349,11 +349,11 @@ def display_statistics(stats: dict, verbose: bool):
 
     stats_text = f"""
 [bold]Discovery Statistics[/bold]
-├── Total Discovered: {stats.get('total_discovered', 0)}
-├── Total Processed: {stats.get('total_processed', 0)}
-├── API Calls: {stats.get('api_calls', 0)}
-├── Cache Hits: {stats.get('cache_hits', 0)}
-└── Errors: {stats.get('errors', 0)}
+- Total Discovered: {stats.get('total_discovered', 0)}
+- Total Processed: {stats.get('total_processed', 0)}
+- API Calls: {stats.get('api_calls', 0)}
+- Cache Hits: {stats.get('cache_hits', 0)}
+- Errors: {stats.get('errors', 0)}
     """
 
     console.print(Panel(stats_text.strip(), title="Performance", border_style="dim"))

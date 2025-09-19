@@ -288,15 +288,21 @@ class RepositoryDiscovery(LoggerMixin):
             return repositories
 
     async def _discover_datasets(self, keywords: List[str], limit: int) -> List[RepositoryMetadata]:
-        """Discover datasets from Hugging Face."""
+        """Discover datasets from Hugging Face with intelligent keyword handling."""
         datasets = []
         seen_ids = set()
+
+        # Use minimum of 10 results per keyword to ensure good coverage
+        # but cap at 100 to avoid too many API calls for large keyword lists
+        per_keyword_limit = max(10, min(100, limit // max(1, len(keywords))))
+
+        self.log_info(f"Searching with {len(keywords)} keywords, {per_keyword_limit} results per keyword")
 
         with ThreadPoolExecutor(max_workers=self.parallel_workers) as executor:
             futures = []
 
             for keyword in keywords:
-                future = executor.submit(self._search_datasets_sync, keyword, limit // len(keywords))
+                future = executor.submit(self._search_datasets_sync, keyword, per_keyword_limit)
                 futures.append((keyword, future))
 
             for keyword, future in futures:
@@ -334,15 +340,21 @@ class RepositoryDiscovery(LoggerMixin):
             return []
 
     async def _discover_models(self, keywords: List[str], limit: int) -> List[RepositoryMetadata]:
-        """Discover models from Hugging Face."""
+        """Discover models from Hugging Face with intelligent keyword handling."""
         models = []
         seen_ids = set()
+
+        # Use minimum of 10 results per keyword to ensure good coverage
+        # but cap at 100 to avoid too many API calls for large keyword lists
+        per_keyword_limit = max(10, min(100, limit // max(1, len(keywords))))
+
+        self.log_info(f"Searching with {len(keywords)} keywords, {per_keyword_limit} results per keyword")
 
         with ThreadPoolExecutor(max_workers=self.parallel_workers) as executor:
             futures = []
 
             for keyword in keywords:
-                future = executor.submit(self._search_models_sync, keyword, limit // len(keywords))
+                future = executor.submit(self._search_models_sync, keyword, per_keyword_limit)
                 futures.append((keyword, future))
 
             for keyword, future in futures:
