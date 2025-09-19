@@ -21,14 +21,18 @@ class Settings(BaseSettings):
     # Application
     app_name: str = "Science Card Improvement"
     app_version: str = "1.0.0"
-    debug: bool = Field(False)
-    environment: str = Field("production")
+    debug: bool = Field(False, alias="API_DEBUG")
+    environment: str = Field("production", alias="ENVIRONMENT")
+    project_name: str = Field("science-card-improvement", alias="PROJECT_NAME")
 
     # Hugging Face
-    hf_token: Optional[SecretStr] = Field(None)
+    hf_token: Optional[SecretStr] = Field(None, alias="HF_TOKEN")
+    huggingface_api_token: Optional[SecretStr] = Field(None, alias="HUGGINGFACE_API_TOKEN")
     hf_endpoint: str = Field("https://huggingface.co")
     hf_api_timeout: int = Field(30)
     hf_max_retries: int = Field(3)
+    hf_hub_cache: Optional[str] = Field(None, alias="HF_HUB_CACHE")
+    hf_datasets_cache: Optional[str] = Field(None, alias="HF_DATASETS_CACHE")
 
     # Paths
     base_dir: Path = Path(__file__).resolve().parent.parent.parent
@@ -41,7 +45,7 @@ class Settings(BaseSettings):
     # Discovery settings
     discovery_batch_size: int = Field(100)
     discovery_max_workers: int = Field(10)
-    discovery_cache_ttl: int = Field(3600)
+    discovery_cache_ttl: int = Field(3600, alias="CACHE_TTL")
 
     # Assessment settings
     assessment_min_readme_length: int = Field(300)
@@ -70,14 +74,14 @@ class Settings(BaseSettings):
     monitoring_metrics_path: str = Field("/metrics")
 
     # Logging
-    log_level: str = Field("INFO")
+    log_level: str = Field("INFO", alias="LOG_LEVEL")
     log_format: str = Field("json")
     log_file_enabled: bool = Field(True)
     log_file_rotation: str = Field("1 day")
     log_file_retention: str = Field("30 days")
 
     # Database (for future scalability)
-    database_url: Optional[str] = Field(None)
+    database_url: Optional[str] = Field(None, alias="DATABASE_URL")
     database_pool_size: int = Field(10)
     database_max_overflow: int = Field(20)
 
@@ -85,10 +89,17 @@ class Settings(BaseSettings):
     redis_url: Optional[str] = Field(None)
     redis_ttl: int = Field(3600)
 
+    # API Configuration
+    api_host: str = Field("localhost", alias="API_HOST")
+    api_port: int = Field(8000, alias="API_PORT")
+
     # API rate limiting
     rate_limit_enabled: bool = Field(True)
     rate_limit_requests: int = Field(100)
     rate_limit_window: int = Field(60)
+
+    # Cache Configuration
+    cache_max_size: int = Field(1000, alias="CACHE_MAX_SIZE")
 
     # Feature flags
     feature_auto_tagging: bool = Field(True)
@@ -112,7 +123,7 @@ class Settings(BaseSettings):
                 setattr(self, attr, self.base_dir / default_name)
         return self
 
-    @field_validator("hf_token")
+    @field_validator("hf_token", "huggingface_api_token")
     def validate_hf_token(cls, value: Optional[SecretStr]) -> Optional[SecretStr]:
         """Validate Hugging Face token if provided."""
 
@@ -131,8 +142,10 @@ class Settings(BaseSettings):
         """Get headers for Hugging Face API requests."""
 
         headers = {"User-Agent": f"{self.app_name}/{self.app_version}"}
-        if self.hf_token:
-            headers["Authorization"] = f"Bearer {self.hf_token.get_secret_value()}"
+        # Use either token field (prefer hf_token, fallback to huggingface_api_token)
+        token = self.hf_token or self.huggingface_api_token
+        if token:
+            headers["Authorization"] = f"Bearer {token.get_secret_value()}"
         return headers
 
     def to_dict(self, *, exclude_secrets: bool = True) -> Dict[str, Any]:
@@ -141,6 +154,7 @@ class Settings(BaseSettings):
         data = self.model_dump()
         if exclude_secrets:
             data.pop("hf_token", None)
+            data.pop("huggingface_api_token", None)
             data.pop("database_url", None)
             data.pop("redis_url", None)
         return data
