@@ -1,0 +1,33 @@
+{
+  "biology": [
+    "biology", "genomics", "proteomics", "single-cell", "bioinformatics",
+    "biotech", "molecular-biology", "cell-biology", "developmental-biology",
+    "evolutionary-biology", "microbiology", "virology", "immunology",
+    "pathology", "anatomy", "physiology", "biochemistry", "biophysics",
+    "neuroscience", "neurobiology", "zoology", "botany", "paleontology"
+  ],
+  "chemistry": [
+    "chemistry", "molecular", "drug-discovery", "pharmaceutical",
+    "medicinal-chemistry", "organic-chemistry", "inorganic-chemistry",
+    "physical-chemistry", "analytical-chemistry", "biochemistry",
+    "chemical-biology", "materials-science", "catalysis", "synthesis"
+  ],
+  "physics": [
+    "physics", "astronomy", "astrophysics", "quantum", "nuclear",
+    "particle-physics", "cosmology", "thermodynamics", "mechanics",
+    "electromagnetism", "optics", "condensed-matter", "plasma-physics",
+    "geophysics", "meteorology", "oceanography"
+  ],
+  "medicine": [
+    "medical", "clinical", "healthcare", "neuroscience", "cardiology",
+    "oncology", "radiology", "pathology", "pharmacology", "epidemiology",
+    "public-health", "mental-health", "pediatrics", "geriatrics",
+    "surgery", "diagnosis", "treatment", "drug-development"
+  ],
+  "environment": [
+    "climate", "ecology", "environmental", "geology", "paleontology",
+    "conservation", "biodiversity", "sustainability", "pollution",
+    "renewable-energy", "carbon-footprint", "ecosystem", "wildlife",
+    "forestry", "agriculture", "soil-science", "hydrology"
+  ]
+}
