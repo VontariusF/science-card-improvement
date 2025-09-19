@@ -411,7 +411,7 @@ This change was:
 - Good example (target): [tahoebio/Tahoe-100M](https://huggingface.co/datasets/tahoebio/Tahoe-100M)
 
 ---
-*Generated with Science Card Improvement Toolkit - All changes human-reviewed*
+*Science Card Improvement Toolkit - All changes human-reviewed*
 """
         return description
 
