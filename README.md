@@ -32,17 +32,40 @@ python -m src.cli.compare --target arcinstitute/opengenome2 --baseline tahoebio/
 python -m src.cli.compare analyze --repo-id arcinstitute/opengenome2
 ```
 
-## ⚡ New Enhanced Discovery System
+## ⚡ Enhanced Discovery System
 
-Our discovery system now uses **192 comprehensive science keywords** covering all major scientific domains:
+### Dual Discovery Approach
 
-- **Medical Sciences**: clinical, pathology, oncology, immunology, pharmacology
-- **Life Sciences**: genomics, proteomics, cell biology, molecular biology
-- **Physical Sciences**: physics, chemistry, materials science, nanotechnology
-- **Earth Sciences**: geology, climate, oceanography, environmental science
-- **Specialized Fields**: neuroscience, bioinformatics, forensic science
+Our system now combines two powerful discovery methods:
 
-**Performance**: Discovers 200+ science datasets in ~30 seconds with intelligent parallel processing.
+#### 1. **Comprehensive Keyword Discovery**
+- **192 science keywords** covering all major scientific domains
+- **Parallel processing** for 200+ datasets in ~30 seconds
+- **Intelligent deduplication** across keyword searches
+
+#### 2. **Hugging Science Portal Integration** 🔬
+Integration with [Hugging Science Dataset Insight Portal](https://huggingface.co/spaces/hugging-science/dataset-insight-portal) provides:
+- **Quality insights** from community-driven metrics
+- **Trending datasets** in scientific domains
+- **Improvement recommendations** based on best practices
+- **Scientific categorization** (genomics, proteomics, medical, etc.)
+- **Community engagement metrics** for prioritization
+
+### Portal-Enhanced Discovery Commands
+
+```bash
+# Search using portal insights for high-priority datasets
+python -m src.cli.portal_discover portal-search --category genomics --max-score 30
+
+# View trending science datasets needing improvement
+python -m src.cli.portal_discover trending --timeframe week
+
+# Combined discovery using both systems
+python -m src.cli.portal_discover enhanced-discovery --limit 300
+
+# Export portal insights with recommendations
+python -m src.cli.portal_discover portal-search --output portal_insights.json --show-recommendations
+```
 
 ## Repository Structure
 
