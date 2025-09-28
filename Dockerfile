@@ -57,7 +57,7 @@ USER scicard
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import src; print('OK')" || exit 1
+    CMD python -c "import science_card_improvement; print('OK')" || exit 1
 
 # Default command
-CMD ["python", "-m", "src.cli.discover", "--help"]
+CMD ["python", "-m", "science_card_improvement.cli.discover", "--help"]

@@ -13,10 +13,10 @@ from rich.panel import Panel
 from rich.layout import Layout
 from rich.live import Live
 
-from src.config.settings import get_settings
-from src.core.discovery import RepositoryDiscovery
-from src.utils.logger import setup_logging
-from src.validators.input_validators import DiscoveryRequestValidator
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.discovery.repository import RepositoryDiscovery
+from science_card_improvement.utils.logger import setup_logging
+from science_card_improvement.validators.input import DiscoveryRequestValidator
 
 
 console = Console()

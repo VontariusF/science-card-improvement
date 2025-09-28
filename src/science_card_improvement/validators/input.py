@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel, Field, validator, HttpUrl
 
-from src.exceptions.custom_exceptions import ValidationError
+from science_card_improvement.exceptions.custom_exceptions import ValidationError
 
 
 class RepositoryIdValidator(BaseModel):

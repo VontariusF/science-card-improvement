@@ -11,8 +11,11 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from src.core.portal_integration import HuggingSciencePortal, EnhancedDiscoveryWithPortal
-from src.utils.logger import setup_logging
+from science_card_improvement.portal.integration import (
+    EnhancedDiscoveryWithPortal,
+    HuggingSciencePortal,
+)
+from science_card_improvement.utils.logger import setup_logging
 
 
 console = Console()
@@ -72,13 +75,11 @@ def portal_search(
 
     Examples:
         # Find genomics datasets needing improvement
-        python -m src.cli.portal_discover portal-search --category genomics
-
-        # Find all science datasets with poor documentation
-        python -m src.cli.portal_discover portal-search --max-score 20
+        python -m science_card_improvement.cli.portal_discover portal-search --category genomics
+        python -m science_card_improvement.cli.portal_discover portal-search --max-score 20
 
         # Export results with recommendations
-        python -m src.cli.portal_discover portal-search --output results.json
+        python -m science_card_improvement.cli.portal_discover portal-search --output results.json
     """
     console.print(
         Panel.fit(
@@ -238,10 +239,8 @@ def enhanced_discovery(limit: int, categories: tuple, output: Optional[str]):
 
     Examples:
         # Full enhanced discovery
-        python -m src.cli.portal_discover enhanced-discovery --limit 300
-
-        # Focus on specific categories
-        python -m src.cli.portal_discover enhanced-discovery --categories genomics --categories proteomics
+        python -m science_card_improvement.cli.portal_discover enhanced-discovery --limit 300
+        python -m science_card_improvement.cli.portal_discover enhanced-discovery --categories genomics --categories proteomics
     """
     console.print(
         Panel.fit(

@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from src.core.discovery import RepositoryDiscovery, RepositoryMetadata
-from src.exceptions.custom_exceptions import NetworkError, RateLimitError
+from science_card_improvement.discovery.repository import RepositoryDiscovery, RepositoryMetadata
+from science_card_improvement.exceptions.custom_exceptions import NetworkError, RateLimitError
 
 
 @pytest.mark.unit

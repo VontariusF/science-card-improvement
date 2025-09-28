@@ -11,9 +11,9 @@ from typing import Any, Dict, Optional, Union
 
 import aiofiles
 
-from src.config.settings import get_settings
-from src.exceptions.custom_exceptions import CacheError
-from src.utils.logger import LoggerMixin
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.exceptions.custom_exceptions import CacheError
+from science_card_improvement.utils.logger import LoggerMixin
 
 
 class CacheManager(LoggerMixin):

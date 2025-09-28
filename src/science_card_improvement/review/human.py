@@ -15,8 +15,8 @@ from rich.prompt import Confirm, Prompt
 from rich.syntax import Syntax
 from rich.table import Table
 
-from src.config.settings import get_settings
-from src.utils.logger import LoggerMixin
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.utils.logger import LoggerMixin
 
 
 @dataclass

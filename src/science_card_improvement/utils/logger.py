@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional
 import structlog
 from structlog.processors import CallsiteParameter, CallsiteParameterAdder
 
-from src.config.settings import get_settings
+from science_card_improvement.config.settings import get_settings
 
 
 class CustomJSONEncoder(json.JSONEncoder):

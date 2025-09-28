@@ -10,9 +10,9 @@ from urllib.parse import urlencode
 import aiohttp
 from gradio_client import Client
 
-from src.config.settings import get_settings
-from src.exceptions.custom_exceptions import NetworkError
-from src.utils.logger import LoggerMixin
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.exceptions.custom_exceptions import NetworkError
+from science_card_improvement.utils.logger import LoggerMixin
 
 
 @dataclass
@@ -413,7 +413,7 @@ class EnhancedDiscoveryWithPortal(LoggerMixin):
         Returns:
             Combined and prioritized dataset list with insights
         """
-        from src.core.discovery import RepositoryDiscovery
+        from science_card_improvement.discovery.repository import RepositoryDiscovery
 
         results = []
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from pydantic import Field, SecretStr, field_validator, model_validator
+from pydantic import AliasChoices, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,17 +16,18 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
+        populate_by_name=True,
     )
 
     # Application
     app_name: str = "Science Card Improvement"
     app_version: str = "1.0.0"
-    debug: bool = Field(False, alias="API_DEBUG")
-    environment: str = Field("production", alias="ENVIRONMENT")
+    debug: bool = Field(False, validation_alias=AliasChoices("API_DEBUG", "DEBUG", "debug"))
+    environment: str = Field("production")
     project_name: str = Field("science-card-improvement", alias="PROJECT_NAME")
 
     # Hugging Face
-    hf_token: Optional[SecretStr] = Field(None, alias="HF_TOKEN")
+    hf_token: Optional[SecretStr] = Field(None)
     huggingface_api_token: Optional[SecretStr] = Field(None, alias="HUGGINGFACE_API_TOKEN")
     hf_endpoint: str = Field("https://huggingface.co")
     hf_api_timeout: int = Field(30)
@@ -35,12 +36,12 @@ class Settings(BaseSettings):
     hf_datasets_cache: Optional[str] = Field(None, alias="HF_DATASETS_CACHE")
 
     # Paths
-    base_dir: Path = Path(__file__).resolve().parent.parent.parent
-    config_dir: Optional[Path] = None
-    templates_dir: Optional[Path] = None
-    cache_dir: Optional[Path] = None
-    logs_dir: Optional[Path] = None
-    output_dir: Optional[Path] = None
+    base_dir: Path = Path(__file__).resolve().parent.parent.parent.parent
+    config_dir: Optional[Path] = Field(None, alias="CONFIG_DIR")
+    templates_dir: Optional[Path] = Field(None, alias="TEMPLATES_DIR")
+    cache_dir: Optional[Path] = Field(None)
+    logs_dir: Optional[Path] = Field(None)
+    output_dir: Optional[Path] = Field(None)
 
     # Discovery settings
     discovery_batch_size: int = Field(100)
@@ -111,16 +112,20 @@ class Settings(BaseSettings):
     def _set_directories(self) -> "Settings":
         """Populate directory attributes if they were not provided."""
 
+        package_root = Path(__file__).resolve().parent.parent
+
+        if self.config_dir is None:
+            self.config_dir = package_root / "resources"
+
         directory_map = {
-            "config_dir": "config",
-            "templates_dir": "templates",
-            "cache_dir": ".cache",
-            "logs_dir": "logs",
-            "output_dir": "output",
+            "templates_dir": self.base_dir / "templates",
+            "cache_dir": self.base_dir / ".cache",
+            "logs_dir": self.base_dir / "logs",
+            "output_dir": self.base_dir / "output",
         }
-        for attr, default_name in directory_map.items():
+        for attr, default_path in directory_map.items():
             if getattr(self, attr) is None:
-                setattr(self, attr, self.base_dir / default_name)
+                setattr(self, attr, default_path)
         return self
 
     @field_validator("hf_token", "huggingface_api_token")

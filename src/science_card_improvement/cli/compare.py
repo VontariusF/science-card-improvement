@@ -12,11 +12,11 @@ from rich.panel import Panel
 from rich.progress import track
 from rich.table import Table
 
-from src.config.settings import get_settings
-from src.core.baseline_analyzer import BaselineAnalyzer
-from src.core.human_review import HumanReviewSystem
-from src.exceptions.custom_exceptions import RepositoryNotFoundError
-from src.utils.logger import setup_logging
+from science_card_improvement.analysis.baseline import BaselineAnalyzer
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.exceptions.custom_exceptions import RepositoryNotFoundError
+from science_card_improvement.review.human import HumanReviewSystem
+from science_card_improvement.utils.logger import setup_logging
 
 
 console = Console()

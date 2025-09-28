@@ -11,10 +11,10 @@ import pytest
 from faker import Faker
 from huggingface_hub import DatasetInfo, ModelInfo
 
-from src.config.settings import Settings, reset_settings
-from src.core.discovery import RepositoryDiscovery, RepositoryMetadata
-from src.utils.cache import CacheManager
-from src.utils.logger import setup_logging
+from science_card_improvement.config.settings import Settings, reset_settings
+from science_card_improvement.discovery.repository import RepositoryDiscovery, RepositoryMetadata
+from science_card_improvement.utils.cache import CacheManager
+from science_card_improvement.utils.logger import setup_logging
 
 
 # Configure pytest-asyncio
@@ -56,7 +56,7 @@ def test_settings() -> Settings:
 @pytest.fixture
 def mock_hf_api():
     """Mock Hugging Face API."""
-    with patch("src.core.discovery.HfApi") as mock_api:
+    with patch("science_card_improvement.discovery.repository.HfApi") as mock_api:
         # Mock list_datasets
         mock_api.return_value.list_datasets.return_value = [
             create_mock_dataset_info("user/dataset1"),

@@ -1,8 +1,4 @@
-"""Science Card Improvement Toolkit.
-
-A comprehensive toolkit for discovering, assessing, and improving dataset
-and model cards on Hugging Face, with a focus on scientific datasets and models.
-"""
+"""Science Card Improvement Toolkit."""
 
 from __future__ import annotations
 
@@ -15,7 +11,7 @@ __author__ = "Science Card Improvement Team"
 if not hasattr(asyncio, "coroutine"):
     asyncio.coroutine = types.coroutine  # type: ignore[attr-defined]
 
-from src.core.discovery import RepositoryDiscovery
+from .discovery.repository import RepositoryDiscovery
 
 __all__ = [
     "RepositoryDiscovery",

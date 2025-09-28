@@ -62,6 +62,29 @@ class AuthenticationError(SciCardException):
         )
 
 
+class AuthorizationError(SciCardException):
+    """Raised when an operation is not authorized."""
+
+    def __init__(
+        self,
+        message: str = "Operation not authorized",
+        resource: Optional[str] = None,
+        action: Optional[str] = None,
+    ):
+        """Initialize authorization error."""
+        details = {}
+        if resource:
+            details["resource"] = resource
+        if action:
+            details["action"] = action
+
+        super().__init__(
+            message=message,
+            error_code="AUTHORIZATION_ERROR",
+            details=details,
+        )
+
+
 class RateLimitError(SciCardException):
     """Raised when API rate limit is exceeded."""
 
@@ -139,6 +162,27 @@ class PRSubmissionError(SciCardException):
         super().__init__(
             message=message,
             error_code="PR_SUBMISSION_ERROR",
+            details=details,
+        )
+
+
+class PortalIntegrationError(SciCardException):
+    """Raised when portal integration operations fail."""
+
+    def __init__(
+        self,
+        message: str,
+        portal: str,
+        operation: Optional[str] = None,
+    ):
+        """Initialize portal integration error."""
+        details = {"portal": portal}
+        if operation:
+            details["operation"] = operation
+
+        super().__init__(
+            message=message,
+            error_code="PORTAL_INTEGRATION_ERROR",
             details=details,
         )
 

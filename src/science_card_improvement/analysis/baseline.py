@@ -8,10 +8,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from huggingface_hub import HfApi
 
-from src.config.settings import get_settings
-from src.exceptions.custom_exceptions import RepositoryNotFoundError
-from src.utils.cache import CacheManager
-from src.utils.logger import LoggerMixin
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.exceptions.custom_exceptions import RepositoryNotFoundError
+from science_card_improvement.utils.cache import CacheManager
+from science_card_improvement.utils.logger import LoggerMixin
 
 
 @dataclass

@@ -4,8 +4,9 @@ Quick script to find datasets on Hugging Face that need improvement.
 """
 
 import asyncio
-from src.core.discovery import RepositoryDiscovery
-from src.core.baseline_analyzer import BaselineAnalyzer
+
+from science_card_improvement.analysis.baseline import BaselineAnalyzer
+from science_card_improvement.discovery.repository import RepositoryDiscovery
 
 async def find_datasets_needing_improvement():
     """Find and display datasets that need documentation improvement."""
@@ -98,7 +99,7 @@ async def find_datasets_needing_improvement():
     print("NEXT STEPS:")
     print("-" * 50)
     print("1. Pick a dataset from the list above")
-    print("2. Run: python -c \"from src.core.baseline_analyzer import BaselineAnalyzer; analyzer = BaselineAnalyzer(); comparison = analyzer.compare_with_baselines('REPO_ID'); print('Quality gap:', comparison['comparison_with_gold_standards'])\"")
+    print("2. Run: python -c \"from science_card_improvement.analysis.baseline import BaselineAnalyzer; analyzer = BaselineAnalyzer(); comparison = analyzer.compare_with_baselines('REPO_ID'); print('Quality gap:', comparison['comparison_with_gold_standards'])\"")
     print("3. Use the human review system to propose improvements")
     print("4. NEVER auto-submit - always review manually!")
 

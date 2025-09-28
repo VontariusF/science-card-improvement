@@ -17,15 +17,15 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from src.config.settings import get_settings
-from src.exceptions.custom_exceptions import (
+from science_card_improvement.config.settings import get_settings
+from science_card_improvement.exceptions.custom_exceptions import (
     AuthenticationError,
     NetworkError,
     RateLimitError,
     RepositoryNotFoundError,
 )
-from src.utils.logger import LoggerMixin, RequestLogger, logger
-from src.utils.cache import CacheManager
+from science_card_improvement.utils.cache import CacheManager
+from science_card_improvement.utils.logger import LoggerMixin, RequestLogger, logger
 
 
 @dataclass

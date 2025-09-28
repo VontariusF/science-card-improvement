@@ -32,7 +32,7 @@ install-dev: ## Install development dependencies
 
 test: ## Run all tests with coverage
 	@echo "$(GREEN)Running all tests...$(NC)"
-	pytest -v --cov=src --cov-report=term-missing --cov-report=html --cov-fail-under=$(COVERAGE_THRESHOLD)
+	pytest -v --cov=science_card_improvement --cov-report=term-missing --cov-report=html --cov-fail-under=$(COVERAGE_THRESHOLD)
 
 test-unit: ## Run unit tests only
 	@echo "$(GREEN)Running unit tests...$(NC)"

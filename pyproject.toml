@@ -77,11 +77,10 @@ docs = [
 ]
 
 [project.scripts]
-sci-discover = "src.cli.discover:main"
-sci-assess = "src.cli.assess:main"
-sci-generate = "src.cli.generate:main"
-sci-submit = "src.cli.submit:main"
-sci-monitor = "src.cli.monitor:main"
+sci-discover = "science_card_improvement.cli.discover:main"
+sci-compare = "science_card_improvement.cli.compare:main"
+sci-portal = "science_card_improvement.cli.portal_discover:main"
+sci-collaborate = "science_card_improvement.cli.collaborate:cli"
 
 [project.urls]
 Homepage = "https://github.com/VontariusF/science-card-improvement"
@@ -90,8 +89,8 @@ Repository = "https://github.com/VontariusF/science-card-improvement.git"
 Issues = "https://github.com/VontariusF/science-card-improvement/issues"
 
 [tool.setuptools]
-package-dir = {"" = "."}
-packages = {find = {include = ["src*"]}}
+package-dir = {"" = "src"}
+packages = {find = {include = ["science_card_improvement*"]}}
 
 [tool.setuptools.package-data]
 "*" = ["*.json", "*.yaml", "*.yml", "*.md", "*.txt"]
@@ -137,7 +136,7 @@ minversion = "6.0"
 addopts = [
     "-ra",
     "--strict-markers",
-    "--cov=src",
+    "--cov=science_card_improvement",
     "--cov-branch",
     "--cov-report=term-missing",
     "--cov-report=html",
@@ -167,7 +166,7 @@ target-version = "py38"
 
 [tool.coverage.run]
 branch = true
-source = ["src"]
+source = ["science_card_improvement"]
 omit = ["*/tests/*", "*/test_*.py", "*/__init__.py"]
 
 [tool.coverage.report]
