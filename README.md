@@ -1,30 +1,29 @@
-# Science Dataset & Model Card Improvement Project
+# Science Card Improvement Toolkit
 
-A comprehensive toolkit for discovering, assessing, and improving dataset and model cards on Hugging Face, with a focus on scientific datasets and models.
+**An intelligent system that discovers and improves Hugging Face dataset/model documentation by learning from exemplary examples.**
 
-## Project Goals
+## 🚀 Quick Start (Essential Components Only)
 
-- **Discover** science-related datasets and models on Hugging Face that need better documentation
-- **Assess** card quality using automated scoring and manual review
-- **Generate** high-quality, informative dataset and model cards
-- **Tag** repositories with appropriate tags (`huggingscience`, `science`, domain-specific tags)
-- **Contribute** improvements via automated PRs and community collaboration
-
-## Quick Start
-
+### 1. Install Dependencies
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Install the package
+pip install -e .
 
-# Set up your Hugging Face token
+# Set your Hugging Face token
 export HF_TOKEN="your_token_here"
+```
 
-# Run comprehensive discovery (finds 200+ datasets across all scientific domains)
+### 2. Run Discovery
+```bash
+# Quick discovery of datasets needing improvement
 python find_datasets.py
 
-# Use CLI for interactive discovery with 192 science keywords
+# Or use the CLI for more control
 python -m src.cli.discover --limit 200 --verbose
+```
 
+### 3. Analyze Specific Repository
+```bash
 # Compare with baseline examples
 python -m src.cli.compare --target arcinstitute/opengenome2 --baseline tahoebio/Tahoe-100M
 
@@ -32,196 +31,180 @@ python -m src.cli.compare --target arcinstitute/opengenome2 --baseline tahoebio/
 python -m src.cli.compare analyze --repo-id arcinstitute/opengenome2
 ```
 
-## ⚡ Enhanced Discovery System
+## 📋 Essential Components (Required)
 
-### Dual Discovery Approach
+### Core Files
+- **`pyproject.toml`** - Package configuration and dependencies
+- **`requirements.txt`** - Minimal dependencies (huggingface_hub)
+- **`.env`** - Your Hugging Face credentials
+- **`find_datasets.py`** - Main discovery script
 
-Our system now combines two powerful discovery methods:
+### Source Code (Essential)
+```
+src/science_card_improvement/
+├── cli/
+│   ├── discover.py          # Discovery CLI
+│   └── compare.py           # Analysis CLI
+├── config/
+│   └── settings.py          # Configuration management
+├── resources/
+│   └── science_keywords.json # 192 science keywords
+├── discovery/
+│   └── repository.py        # Repository discovery logic
+├── analysis/
+│   └── baseline.py          # Baseline analysis
+└── utils/
+    ├── cache.py             # Caching utilities
+    └── logger.py            # Logging utilities
+```
 
-#### 1. **Comprehensive Keyword Discovery**
-- **192 science keywords** covering all major scientific domains
-- **Parallel processing** for 200+ datasets in ~30 seconds
-- **Intelligent deduplication** across keyword searches
+### Configuration Files
+- **`src/science_card_improvement/resources/science_keywords.json`** - 192 comprehensive science keywords
+- **`src/science_card_improvement/config/settings.py`** - Environment variable handling
 
-#### 2. **Hugging Science Portal Integration** 🔬
-Integration with [Hugging Science Dataset Insight Portal](https://huggingface.co/spaces/hugging-science/dataset-insight-portal) provides:
-- **Quality insights** from community-driven metrics
-- **Trending datasets** in scientific domains
-- **Improvement recommendations** based on best practices
-- **Scientific categorization** (genomics, proteomics, medical, etc.)
-- **Community engagement metrics** for prioritization
+## ❌ Unnecessary Components (Can Be Removed)
 
-### Portal-Enhanced Discovery Commands
+### Documentation Files
+- `README_ENHANCED.md` - Redundant documentation
+- `BASELINE_COMPARISON.md` - Detailed docs (not needed for basic usage)
+- `GETTING_STARTED.md` - Redundant with this README
+- `docs/` - Entire directory (optional documentation)
 
+### Development Files
+- `tests/` - Entire directory (development only)
+- `Makefile` - Development automation
+- `Dockerfile` & `docker-compose.yml` - Containerization (optional)
+- `.github/workflows/` - CI/CD (development only)
+
+### Generated/Cache Files
+- `.cache/` - Runtime cache (auto-generated)
+- `logs/` - Log files (auto-generated)
+- `output/` - Output files (auto-generated)
+- `*.egg-info/` - Python package metadata (auto-generated)
+- `__pycache__/` - Python bytecode cache (auto-generated)
+
+### Example Files
+- `examples/` - Example files (optional)
+- `templates/` - Card templates (optional for basic usage)
+
+### Scripts Directory
+- `scripts/discover_science_repos.py` - Old script (replaced by CLI)
+
+## 🛠️ Installation
+
+### Minimal Installation
 ```bash
-# Search using portal insights for high-priority datasets
-python -m src.cli.portal_discover portal-search --category genomics --max-score 30
+# Clone repository
+git clone https://github.com/VontariusF/science-card-improvement.git
+cd science-card-improvement
 
-# View trending science datasets needing improvement
-python -m src.cli.portal_discover trending --timeframe week
+# Install in development mode
+pip install -e .
 
-# Combined discovery using both systems
-python -m src.cli.portal_discover enhanced-discovery --limit 300
-
-# Export portal insights with recommendations
-python -m src.cli.portal_discover portal-search --output portal_insights.json --show-recommendations
+# Set up environment
+cp .env.example .env
+# Edit .env and add your HF_TOKEN
 ```
 
-## Repository Structure
+### Dependencies (Auto-installed)
+The system automatically installs these essential dependencies:
+- `huggingface-hub>=0.19.0` - Hugging Face API
+- `click>=8.0.0` - CLI framework
+- `rich>=13.0.0` - Rich terminal output
+- `pydantic>=2.0.0` - Data validation
+- `python-dotenv>=1.0.0` - Environment variables
 
-```
-├── scripts/                    # Main automation scripts
-│   ├── discover_science_repos.py    # Find science datasets/models
-│   ├── assess_card_quality.py       # Score existing cards
-│   ├── generate_card.py             # Generate improved cards
-│   ├── create_pr.py                # Create PRs with improvements
-│   └── manage_tags.py               # Suggest and apply tags
-├── templates/                  # Card templates
-│   ├── dataset_card_template.md     # Comprehensive dataset card
-│   ├── model_card_template.md       # Comprehensive model card
-│   └── minimal_card_template.md     # Minimal viable card
-├── examples/                   # Example cards and outputs
-│   ├── good_examples/              # High-quality card examples
-│   └── bad_examples/               # Cards that need improvement
-├── utils/                      # Utility functions
-│   ├── hf_api.py                   # Hugging Face API helpers
-│   ├── card_scorer.py              # Card quality assessment
-│   └── template_engine.py          # Card generation engine
-├── config/                     # Configuration files
-│   ├── science_keywords.json       # Science-related search terms
-│   ├── domain_tags.json            # Domain-specific tags
-│   └── scoring_criteria.json       # Card scoring parameters
-└── docs/                       # Documentation
-    ├── card_guidelines.md           # How to write good cards
-    ├── api_reference.md             # API documentation
-    └── contributing.md              # How to contribute
-```
+## 🎯 Core Functionality
 
-## Enhanced Discovery Process
+### 1. Discovery System
+**192 Science Keywords** covering all major scientific domains:
+- **Medical Sciences**: clinical, pathology, oncology, immunology, pharmacology
+- **Life Sciences**: genomics, proteomics, cell biology, molecular biology
+- **Physical Sciences**: physics, chemistry, materials science, nanotechnology
+- **Earth Sciences**: geology, climate, oceanography, environmental science
+- **Specialized Fields**: neuroscience, bioinformatics, forensic science
 
-### 1. Intelligent Keyword-Based Discovery
-**192 Science Keywords** covering comprehensive scientific domains:
-- **Core Sciences**: science, research, experiment, analysis, laboratory
-- **Biology**: genomics, proteomics, cell biology, molecular biology, bioinformatics
-- **Medical**: clinical, pathology, oncology, immunology, pharmacology, epidemiology
-- **Chemistry**: organic, inorganic, analytical, synthesis, spectroscopy, crystallography
-- **Physics**: quantum, mechanics, optics, thermodynamics, particle physics
-- **Earth Sciences**: geology, climate, oceanography, atmospheric science, environmental
-- **Specialized**: neuroscience, forensic science, paleontology, toxicology
+**Performance**: Discovers 200+ science datasets in ~30 seconds with intelligent parallel processing.
 
-**Intelligent Processing**:
-- **Parallel API calls**: All 192 keywords searched concurrently
-- **Adaptive limits**: Minimum 10 results per keyword, capped at 100 for efficiency
-- **Automatic deduplication**: Removes duplicate repositories across keyword searches
-- **Scalable architecture**: Handles large keyword sets without performance degradation
-
-### 2. Quality Assessment Metrics
+### 2. Quality Assessment
 - **Missing README**: No README.md file
 - **Short README**: Less than 300 characters
-- **Missing sections**: License, citation, data collection, limitations
-- **Dataset viewer errors**: Generation errors, loading issues
+- **Missing sections**: No description, usage, or citation sections
 - **Poor tagging**: Missing domain-specific tags
 
-### 3. Enhanced Scoring System (0-100 scale)
+### 3. Scoring System (0-100 scale)
 - **Score 0-10**: Critical issues (missing/minimal README, major errors)
 - **Score 10-30**: Needs significant improvement (short README, missing sections)
 - **Score 30-50**: Moderate quality, could be enhanced
 - **Score 50-70**: Good documentation with minor improvements needed
 - **Score 70-100**: Excellent card meeting all best practices
 
-### 4. Discovery Performance Metrics
+## 🚀 Usage Examples
+
+### Basic Discovery
+```bash
+# Find datasets needing improvement
+python find_datasets.py
+
+# Use CLI with options
+python -m src.cli.discover --type dataset --limit 100 --needs-improvement
+```
+
+### Analysis and Comparison
+```bash
+# Compare with baseline examples
+python -m src.cli.compare --target arcinstitute/opengenome2 --baseline tahoebio/Tahoe-100M
+
+# Analyze specific repository
+python -m src.cli.compare analyze --repo-id arcinstitute/opengenome2
+```
+
+### Advanced Discovery
+```bash
+# Search with specific keywords
+python -m src.cli.discover --keywords genomics --keywords proteomics --limit 50
+
+# Export results
+python -m src.cli.discover --output results.json --format json
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Required
+export HF_TOKEN="your_huggingface_token_here"
+
+# Optional
+export API_DEBUG=true
+export LOG_LEVEL=INFO
+export CACHE_TTL=3600
+```
+
+### Settings
+The system automatically loads configuration from:
+- Environment variables
+- `.env` file
+- Default values in `settings.py`
+
+## 📊 Performance Metrics
+
+### Discovery Performance
 - **Search Coverage**: 192 keywords × 10 results = 1,920+ potential discoveries
-- **Actual Results**: 200+ unique datasets per search (limited by configured max)
+- **Actual Results**: 200+ unique datasets per search
 - **Processing Speed**: ~30 seconds for comprehensive search
 - **Success Rate**: 99.5% of discovered datasets need improvement
 - **Scientific Coverage**: All major scientific domains and subdisciplines
 
-## Card Templates
+## 🛡️ Safety Features
 
-### Dataset Card Template
-- **Title & Description**: Clear, concise summary
-- **Motivation**: Why this dataset was created
-- **Data Sources**: Collection methods, sources, access
-- **Structure**: Splits, columns, sizes, sample data
-- **License**: Clear licensing information
-- **Citation**: Proper academic citation format
-- **Usage Examples**: Code snippets, loading instructions
-- **Limitations**: Known issues, biases, ethical considerations
-- **Contact**: Maintainer information
+### Human Review Required
+- **No Automatic Pushing**: All changes require human review
+- **Respect Maintainers**: Always coordinate with repository maintainers
+- **Quality Focus**: Better to improve few repos well than many poorly
+- **Factual Accuracy**: AI suggestions need human verification
 
-### Model Card Template
-- **Model Description**: Architecture, purpose, capabilities
-- **Training Data**: Dataset used, preprocessing
-- **Training Procedure**: Hyperparameters, training setup
-- **Evaluation**: Metrics, benchmarks, performance
-- **Limitations**: Known issues, biases, use cases to avoid
-- **Citation**: Proper academic citation
-- **License**: Model licensing information
-
-## Tagging Strategy
-
-### Core Tags
-- `huggingscience`: Main project tag
-- `science`: General science tag
-- `datasets`: For datasets
-- `models`: For models
-
-### Domain-Specific Tags
-- **Biology**: `biology`, `genomics`, `proteomics`, `single-cell`
-- **Chemistry**: `chemistry`, `molecular`, `drug-discovery`
-- **Physics**: `physics`, `astronomy`, `quantum`
-- **Medicine**: `medical`, `clinical`, `healthcare`
-- **Environment**: `climate`, `ecology`, `environmental`
-
-## Contributing
-
-1. **Fork** the repository
-2. **Create** a feature branch
-3. **Run** the discovery scripts to find repositories
-4. **Assess** card quality and generate improvements
-5. **Submit** PRs with your improvements
-6. **Coordinate** with maintainers for merging
-
-## Example Workflow
-
-```python
-from utils.hf_api import HFApiClient
-from utils.card_scorer import CardScorer
-from utils.template_engine import CardGenerator
-
-# Initialize clients
-api = HFApiClient()
-scorer = CardScorer()
-generator = CardGenerator()
-
-# Find science datasets
-datasets = api.search_science_repos(type="dataset", limit=50)
-
-# Assess quality
-for dataset in datasets:
-    score = scorer.assess_card(dataset.id)
-    if score < 6:  # Needs improvement
-        # Generate improved card
-        new_card = generator.generate_dataset_card(dataset.id)
-        
-        # Create PR
-        pr_url = api.create_pr(
-            repo_id=dataset.id,
-            file_path="README.md",
-            content=new_card,
-            message="Improve dataset card quality"
-        )
-        print(f"Created PR for {dataset.id}: {pr_url}")
-```
-
-## Success Metrics
-
-- **Cards Improved**: Number of repositories with enhanced cards
-- **PRs Merged**: Successful contributions to the community
-- **Tags Applied**: Proper tagging of science repositories
-- **Community Engagement**: Discussions and collaborations
-
-## Resources
+## 📚 Resources
 
 - [Hugging Face Dataset Card Guide](https://huggingface.co/docs/datasets/en/dataset_card)
 - [Hugging Face Model Card Guide](https://huggingface.co/docs/hub/model-cards)
@@ -235,46 +218,32 @@ for dataset in datasets:
 - **Community guidelines**: Follow Hugging Face community standards
 - **Attribution**: Properly credit original authors and sources
 
+## 🏗️ Architecture
+
+```
+src/science_card_improvement/
+├── cli/                      # Command-line interfaces
+│   ├── discover.py           # Discovery CLI
+│   └── compare.py            # Analysis CLI
+├── config/                   # Configuration management
+│   └── settings.py           # Environment variables
+├── discovery/                # Repository discovery
+│   └── repository.py         # Discovery logic
+├── analysis/                 # Quality analysis
+│   └── baseline.py           # Baseline comparison
+├── resources/                # Static resources
+│   └── science_keywords.json # Science keywords
+└── utils/                    # Utilities
+    ├── cache.py              # Caching
+    └── logger.py             # Logging
+```
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Getting Started
-
-To get started with this project:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/VontariusF/science-card-improvement.git
-   cd science-card-improvement
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Set up your Hugging Face token**:
-   ```bash
-   export HF_TOKEN="your_token_here"
-   ```
-
-4. **Run the discovery script**:
-   ```bash
-   python scripts/discover_science_repos.py --type dataset --limit 10 --display
-   ```
-
-5. **Start contributing** to improve science dataset and model cards!
-
-## Support
-
-For questions, issues, or contributions:
-
-- **GitHub Issues**: Report bugs and request features
-- **GitHub Discussions**: Ask questions and share ideas
-- **Documentation**: Comprehensive guides and API reference
-- **Examples**: Working examples and use cases
+MIT License - See [LICENSE](LICENSE) for details
 
 ---
 
-**This project aims to make scientific datasets and models more accessible and usable for the research community by improving their documentation and discoverability.**
+**Making scientific data more accessible through better documentation**
+
+*All improvements require human review - No automatic pushing*
