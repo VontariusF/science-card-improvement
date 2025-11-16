@@ -70,3 +70,9 @@ logs/
 # Temporary files
 tmp/
 temp/
+
+# Testing and coverage
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
