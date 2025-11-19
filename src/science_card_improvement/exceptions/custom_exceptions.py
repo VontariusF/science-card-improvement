@@ -197,7 +197,7 @@ class NetworkError(SciCardException):
         status_code: Optional[int] = None,
     ):
         """Initialize network error."""
-        details = {}
+        details: Dict[str, Any] = {}
         if url:
             details["url"] = url
         if status_code:

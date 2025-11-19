@@ -48,7 +48,7 @@ class DiscoveryRequestValidator(BaseModel):
 
     repo_type: str = Field("both", description="Repository type to discover")
     limit: int = Field(100, ge=1, le=1000, description="Maximum results")
-    keywords: Optional[List[str]] = Field(None, max_items=50)
+    keywords: Optional[List[str]] = Field(None, max_length=50)
     sort_by: str = Field("priority", description="Sort criteria")
     filters: Optional[Dict[str, Any]] = Field(None)
 
@@ -109,7 +109,7 @@ class DiscoveryRequestValidator(BaseModel):
 
             # Validate ranges
             if key in ["min_downloads", "min_likes", "max_readme_length"]:
-                if value < 0:
+                if isinstance(value, int) and value < 0:
                     raise ValueError(f"Filter '{key}' must be non-negative")
 
         return v
@@ -195,7 +195,7 @@ class TagSuggestionValidator(BaseModel):
 
     repo_id: str = Field(..., description="Repository ID")
     repo_type: str = Field("dataset", description="Repository type")
-    existing_tags: List[str] = Field(default_factory=list, max_items=100)
+    existing_tags: List[str] = Field(default_factory=list, max_length=100)
     max_suggestions: int = Field(10, ge=1, le=50)
     include_domain_tags: bool = Field(True)
 
@@ -214,7 +214,7 @@ class TagSuggestionValidator(BaseModel):
 class BatchProcessingValidator(BaseModel):
     """Validator for batch processing requests."""
 
-    repo_ids: List[str] = Field(..., min_items=1, max_items=100)
+    repo_ids: List[str] = Field(..., min_length=1, max_length=100)
     operation: str = Field(..., description="Operation to perform")
     parallel_workers: int = Field(5, ge=1, le=20)
     continue_on_error: bool = Field(True)

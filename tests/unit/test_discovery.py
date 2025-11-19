@@ -74,10 +74,10 @@ class TestRepositoryMetadata:
 
 
 @pytest.mark.unit
-@pytest.mark.asyncio
 class TestRepositoryDiscovery:
     """Test RepositoryDiscovery class."""
 
+    @pytest.mark.asyncio
     async def test_discovery_initialization(self, test_settings):
         """Test discovery client initialization."""
         discovery = RepositoryDiscovery(token="test_token")
@@ -85,6 +85,7 @@ class TestRepositoryDiscovery:
         assert discovery.parallel_workers > 0
         assert len(discovery.science_keywords) > 0
 
+    @pytest.mark.asyncio
     async def test_discover_repositories_datasets(self, discovery_client, mock_hf_api):
         """Test discovering datasets."""
         repos = await discovery_client.discover_repositories(
@@ -95,6 +96,7 @@ class TestRepositoryDiscovery:
         assert all(isinstance(r, RepositoryMetadata) for r in repos)
         assert all(r.repo_type == "dataset" for r in repos)
 
+    @pytest.mark.asyncio
     async def test_discover_repositories_models(self, discovery_client, mock_hf_api):
         """Test discovering models."""
         repos = await discovery_client.discover_repositories(
@@ -104,6 +106,7 @@ class TestRepositoryDiscovery:
         assert isinstance(repos, list)
         assert all(r.repo_type == "model" for r in repos)
 
+    @pytest.mark.asyncio
     async def test_discover_repositories_both(self, discovery_client, mock_hf_api):
         """Test discovering both datasets and models."""
         repos = await discovery_client.discover_repositories(
@@ -115,6 +118,7 @@ class TestRepositoryDiscovery:
         repo_types = {r.repo_type for r in repos}
         assert "dataset" in repo_types or "model" in repo_types
 
+    @pytest.mark.asyncio
     async def test_discover_with_keywords(self, discovery_client, mock_hf_api):
         """Test discovery with custom keywords."""
         repos = await discovery_client.discover_repositories(
@@ -125,6 +129,7 @@ class TestRepositoryDiscovery:
         assert isinstance(repos, list)
         assert len(repos) <= 5
 
+    @pytest.mark.asyncio
     async def test_discover_with_filters(self, discovery_client, mock_hf_api):
         """Test discovery with filters."""
         # Create mock repos with different download counts
@@ -153,6 +158,7 @@ class TestRepositoryDiscovery:
             # Should only return repos with downloads >= 500
             assert all(r.downloads >= 500 for r in repos)
 
+    @pytest.mark.asyncio
     async def test_discover_with_sorting(self, discovery_client):
         """Test discovery with different sorting options."""
         mock_repos = [
@@ -189,6 +195,7 @@ class TestRepositoryDiscovery:
             )
             assert repos[0].priority_score >= repos[-1].priority_score
 
+    @pytest.mark.asyncio
     async def test_network_error_retry(self, discovery_client):
         """Test retry on network errors."""
         with patch.object(
@@ -203,6 +210,7 @@ class TestRepositoryDiscovery:
             )
             assert isinstance(repos, list)
 
+    @pytest.mark.asyncio
     async def test_rate_limit_error_retry(self, discovery_client):
         """Test retry on rate limit errors."""
         with patch.object(
@@ -216,6 +224,7 @@ class TestRepositoryDiscovery:
             )
             assert isinstance(repos, list)
 
+    @pytest.mark.asyncio
     async def test_enrichment_with_readme(self, discovery_client, tmp_path):
         """Test metadata enrichment with README."""
         # Create mock README file
@@ -240,6 +249,7 @@ class TestRepositoryDiscovery:
             assert enriched.readme_length == len(readme_content)
             assert enriched.readme_quality_score > 0
 
+    @pytest.mark.asyncio
     async def test_enrichment_without_readme(self, discovery_client):
         """Test metadata enrichment without README."""
         with patch.object(
@@ -291,6 +301,7 @@ class TestRepositoryDiscovery:
         assert len(suggestions) > 0
         assert any("README" in s for s in suggestions)
 
+    @pytest.mark.asyncio
     async def test_export_results_json(self, discovery_client, tmp_path):
         """Test exporting results to JSON."""
         repos = [
@@ -313,6 +324,7 @@ class TestRepositoryDiscovery:
         assert len(data) == 3
         assert data[0]["repo_id"] == "test/repo0"
 
+    @pytest.mark.asyncio
     async def test_export_results_csv(self, discovery_client, tmp_path):
         """Test exporting results to CSV."""
         repos = [
