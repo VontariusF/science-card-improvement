@@ -5,10 +5,12 @@ import sys
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any, Dict, Optional
+from types import TracebackType
+from typing import Any, Dict, MutableMapping, Optional, Type, Union
 
 import structlog
 from structlog.processors import CallsiteParameter, CallsiteParameterAdder
+from structlog.types import Processor
 
 from science_card_improvement.config.settings import get_settings
 
@@ -61,7 +63,13 @@ def setup_logging(
 
     # Add file handler if enabled
     if settings.log_file_enabled or log_file:
-        file_path = log_file or settings.logs_dir / f"{settings.app_name.lower().replace(' ', '_')}.log"
+        if log_file:
+            file_path = log_file
+        elif settings.logs_dir:
+            file_path = settings.logs_dir / f"{settings.app_name.lower().replace(' ', '_')}.log"
+        else:
+            file_path = Path("logs") / f"{settings.app_name.lower().replace(' ', '_')}.log"
+
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
         file_handler = RotatingFileHandler(
@@ -74,7 +82,7 @@ def setup_logging(
         logging.root.addHandler(file_handler)
 
     # Configure structlog processors
-    shared_processors = [
+    shared_processors: list[Processor] = [
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
         structlog.stdlib.PositionalArgumentsFormatter(),
@@ -92,7 +100,11 @@ def setup_logging(
     ]
 
     # Add environment context
-    def add_environment(logger, method_name, event_dict):
+    def add_environment(
+        logger: Any,
+        method_name: str,
+        event_dict: MutableMapping[str, Any]
+    ) -> MutableMapping[str, Any]:
         """Add environment context to logs."""
         event_dict["environment"] = settings.environment
         event_dict["app_name"] = settings.app_name
@@ -102,6 +114,7 @@ def setup_logging(
     shared_processors.append(add_environment)
 
     # Configure output format
+    renderer: Any
     if log_format == "json":
         renderer = structlog.processors.JSONRenderer(
             serializer=lambda obj, **kwargs: json.dumps(obj, cls=CustomJSONEncoder)
@@ -136,33 +149,35 @@ def setup_logging(
 class LoggerMixin:
     """Mixin class to add logging capabilities to any class."""
 
+    _logger: Optional[structlog.BoundLogger] = None
+
     @property
     def logger(self) -> structlog.BoundLogger:
         """Get a logger instance bound to this class."""
-        if not hasattr(self, "_logger"):
+        if self._logger is None:
             self._logger = structlog.get_logger(self.__class__.__name__)
         return self._logger
 
-    def log_debug(self, message: str, **kwargs) -> None:
+    def log_debug(self, message: str, **kwargs: Any) -> None:
         """Log debug message."""
         self.logger.debug(message, **kwargs)
 
-    def log_info(self, message: str, **kwargs) -> None:
+    def log_info(self, message: str, **kwargs: Any) -> None:
         """Log info message."""
         self.logger.info(message, **kwargs)
 
-    def log_warning(self, message: str, **kwargs) -> None:
+    def log_warning(self, message: str, **kwargs: Any) -> None:
         """Log warning message."""
         self.logger.warning(message, **kwargs)
 
-    def log_error(self, message: str, exception: Optional[Exception] = None, **kwargs) -> None:
+    def log_error(self, message: str, exception: Optional[Exception] = None, **kwargs: Any) -> None:
         """Log error message with optional exception."""
         if exception:
             kwargs["exception"] = str(exception)
             kwargs["exception_type"] = type(exception).__name__
         self.logger.error(message, **kwargs)
 
-    def log_critical(self, message: str, **kwargs) -> None:
+    def log_critical(self, message: str, **kwargs: Any) -> None:
         """Log critical message."""
         self.logger.critical(message, **kwargs)
 
@@ -170,14 +185,14 @@ class LoggerMixin:
 class RequestLogger:
     """Context manager for logging requests with timing."""
 
-    def __init__(self, logger: structlog.BoundLogger, operation: str, **context):
+    def __init__(self, logger: structlog.BoundLogger, operation: str, **context: Any) -> None:
         """Initialize request logger."""
         self.logger = logger
         self.operation = operation
         self.context = context
-        self.start_time = None
+        self.start_time: Optional[datetime] = None
 
-    def __enter__(self):
+    def __enter__(self) -> "RequestLogger":
         """Start timing and log request."""
         self.start_time = datetime.utcnow()
         self.logger.info(
@@ -187,9 +202,17 @@ class RequestLogger:
         )
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType]
+    ) -> bool:
         """Log request completion with duration."""
-        duration_ms = int((datetime.utcnow() - self.start_time).total_seconds() * 1000)
+        if self.start_time is None:
+            duration_ms = 0
+        else:
+            duration_ms = int((datetime.utcnow() - self.start_time).total_seconds() * 1000)
 
         if exc_type is None:
             self.logger.info(
@@ -217,22 +240,22 @@ logger = setup_logging()
 
 
 # Convenience functions
-def log_debug(message: str, **kwargs) -> None:
+def log_debug(message: str, **kwargs: Any) -> None:
     """Log debug message."""
     logger.debug(message, **kwargs)
 
 
-def log_info(message: str, **kwargs) -> None:
+def log_info(message: str, **kwargs: Any) -> None:
     """Log info message."""
     logger.info(message, **kwargs)
 
 
-def log_warning(message: str, **kwargs) -> None:
+def log_warning(message: str, **kwargs: Any) -> None:
     """Log warning message."""
     logger.warning(message, **kwargs)
 
 
-def log_error(message: str, exception: Optional[Exception] = None, **kwargs) -> None:
+def log_error(message: str, exception: Optional[Exception] = None, **kwargs: Any) -> None:
     """Log error message with optional exception."""
     if exception:
         kwargs["exception"] = str(exception)
@@ -240,6 +263,6 @@ def log_error(message: str, exception: Optional[Exception] = None, **kwargs) -> 
     logger.error(message, **kwargs)
 
 
-def log_critical(message: str, **kwargs) -> None:
+def log_critical(message: str, **kwargs: Any) -> None:
     """Log critical message."""
     logger.critical(message, **kwargs)
