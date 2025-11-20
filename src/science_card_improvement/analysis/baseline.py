@@ -705,3 +705,69 @@ Implementing these improvements could:
 """
 
         return report
+
+    def generate_improvement_suggestions(self, target: CardAnalysis) -> List[str]:
+        """Generate improvement suggestions based on comparison with gold standards.
+
+        Args:
+            target: Analysis of the target card to improve
+
+        Returns:
+            List of improvement suggestions
+        """
+        suggestions = []
+
+        # Compare with gold standards to find gaps
+        for gold_id, gold_analysis in self.gold_standards.items():
+            # Identify missing sections
+            target_section_names = {s.name.lower() for s in target.sections}
+            gold_section_names = {s.name.lower() for s in gold_analysis.sections}
+            missing_sections = gold_section_names - target_section_names
+
+            for section in missing_sections:
+                suggestions.append(f"Add '{section}' section (present in {gold_id})")
+
+            # Check quality gap
+            quality_gap = gold_analysis.quality_score - target.quality_score
+            if quality_gap > 20:
+                suggestions.append(f"Improve overall quality (gap of {quality_gap:.1f} points from {gold_id})")
+
+        # Add suggestions based on missing elements
+        for element in target.missing_elements:
+            suggestions.append(f"Add {element}")
+
+        # Add suggestions based on weaknesses
+        for weakness in target.weaknesses:
+            suggestions.append(f"Address: {weakness}")
+
+        # Check for code examples
+        if not any(s.has_code_examples for s in target.sections):
+            suggestions.append("Add code examples for usage")
+
+        # Check for citations
+        if not any(s.has_citations for s in target.sections):
+            suggestions.append("Add citations to relevant papers")
+
+        return list(set(suggestions))  # Remove duplicates
+
+    def _parse_sections(self, readme: str) -> List[CardSection]:
+        """Parse README content into sections.
+
+        Args:
+            readme: README content to parse
+
+        Returns:
+            List of parsed sections
+        """
+        return self._extract_sections(readme)
+
+    def _calculate_section_quality(self, section: CardSection) -> float:
+        """Calculate quality score for a section.
+
+        Args:
+            section: Section to calculate quality for
+
+        Returns:
+            Quality score (0-1)
+        """
+        return self._score_section_quality(section.name, section.content)

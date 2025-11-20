@@ -3,7 +3,7 @@
 import re
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from pydantic import BaseModel, Field, validator, HttpUrl
+from pydantic import BaseModel, Field, field_validator, HttpUrl
 
 from science_card_improvement.exceptions.custom_exceptions import ValidationError
 
@@ -14,7 +14,8 @@ class RepositoryIdValidator(BaseModel):
     repo_id: str = Field(..., description="Repository ID in format 'owner/name'")
     repo_type: str = Field("dataset", description="Repository type")
 
-    @validator("repo_id")
+    @field_validator("repo_id")
+    @classmethod
     def validate_repo_id(cls, v: str) -> str:
         """Validate repository ID format."""
         if not v or not isinstance(v, str):
@@ -34,7 +35,8 @@ class RepositoryIdValidator(BaseModel):
 
         return v
 
-    @validator("repo_type")
+    @field_validator("repo_type")
+    @classmethod
     def validate_repo_type(cls, v: str) -> str:
         """Validate repository type."""
         allowed_types = ["dataset", "model", "space"]
@@ -52,7 +54,8 @@ class DiscoveryRequestValidator(BaseModel):
     sort_by: str = Field("priority", description="Sort criteria")
     filters: Optional[Dict[str, Any]] = Field(None)
 
-    @validator("repo_type")
+    @field_validator("repo_type")
+    @classmethod
     def validate_repo_type(cls, v: str) -> str:
         """Validate repository type."""
         allowed_types = ["dataset", "model", "both"]
@@ -60,7 +63,8 @@ class DiscoveryRequestValidator(BaseModel):
             raise ValueError(f"Repository type must be one of: {', '.join(allowed_types)}")
         return v
 
-    @validator("keywords")
+    @field_validator("keywords")
+    @classmethod
     def validate_keywords(cls, v: Optional[List[str]]) -> Optional[List[str]]:
         """Validate keywords list."""
         if v is None:
@@ -77,7 +81,8 @@ class DiscoveryRequestValidator(BaseModel):
 
         return v
 
-    @validator("sort_by")
+    @field_validator("sort_by")
+    @classmethod
     def validate_sort_by(cls, v: str) -> str:
         """Validate sort criteria."""
         allowed_sorts = ["downloads", "likes", "updated", "priority", "readme_quality"]
@@ -85,7 +90,8 @@ class DiscoveryRequestValidator(BaseModel):
             raise ValueError(f"Sort criteria must be one of: {', '.join(allowed_sorts)}")
         return v
 
-    @validator("filters")
+    @field_validator("filters")
+    @classmethod
     def validate_filters(cls, v: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
         """Validate filter parameters."""
         if v is None:
@@ -125,13 +131,15 @@ class CardGenerationRequestValidator(BaseModel):
     include_citation: bool = Field(True, description="Include citation")
     custom_fields: Optional[Dict[str, str]] = Field(None, description="Custom fields")
 
-    @validator("repo_id")
+    @field_validator("repo_id")
+    @classmethod
     def validate_repo_id(cls, v: str) -> str:
         """Validate repository ID."""
         validator = RepositoryIdValidator(repo_id=v, repo_type="dataset")
         return validator.repo_id
 
-    @validator("template")
+    @field_validator("template")
+    @classmethod
     def validate_template(cls, v: str) -> str:
         """Validate template name."""
         allowed_templates = ["comprehensive", "minimal", "scientific", "medical", "custom"]
@@ -139,7 +147,8 @@ class CardGenerationRequestValidator(BaseModel):
             raise ValueError(f"Template must be one of: {', '.join(allowed_templates)}")
         return v
 
-    @validator("custom_fields")
+    @field_validator("custom_fields")
+    @classmethod
     def validate_custom_fields(cls, v: Optional[Dict[str, str]]) -> Optional[Dict[str, str]]:
         """Validate custom fields."""
         if v is None:
@@ -170,13 +179,15 @@ class PRSubmissionValidator(BaseModel):
     branch_name: Optional[str] = Field(None, max_length=100)
     commit_message: Optional[str] = Field(None, max_length=500)
 
-    @validator("repo_id")
+    @field_validator("repo_id")
+    @classmethod
     def validate_repo_id(cls, v: str) -> str:
         """Validate repository ID."""
         validator = RepositoryIdValidator(repo_id=v, repo_type="dataset")
         return validator.repo_id
 
-    @validator("branch_name")
+    @field_validator("branch_name")
+    @classmethod
     def validate_branch_name(cls, v: Optional[str]) -> Optional[str]:
         """Validate branch name."""
         if v is None:
@@ -199,7 +210,8 @@ class TagSuggestionValidator(BaseModel):
     max_suggestions: int = Field(10, ge=1, le=50)
     include_domain_tags: bool = Field(True)
 
-    @validator("existing_tags")
+    @field_validator("existing_tags")
+    @classmethod
     def validate_tags(cls, v: List[str]) -> List[str]:
         """Validate tag list."""
         for tag in v:
@@ -220,7 +232,8 @@ class BatchProcessingValidator(BaseModel):
     continue_on_error: bool = Field(True)
     dry_run: bool = Field(False)
 
-    @validator("repo_ids")
+    @field_validator("repo_ids")
+    @classmethod
     def validate_repo_ids(cls, v: List[str]) -> List[str]:
         """Validate repository IDs."""
         for repo_id in v:
@@ -230,7 +243,8 @@ class BatchProcessingValidator(BaseModel):
                 raise ValueError(f"Invalid repository ID '{repo_id}': {str(e)}")
         return v
 
-    @validator("operation")
+    @field_validator("operation")
+    @classmethod
     def validate_operation(cls, v: str) -> str:
         """Validate operation."""
         allowed_operations = [
@@ -252,7 +266,8 @@ class ConfigUpdateValidator(BaseModel):
     setting_value: Any = Field(..., description="New value")
     persist: bool = Field(False, description="Persist to file")
 
-    @validator("setting_key")
+    @field_validator("setting_key")
+    @classmethod
     def validate_setting_key(cls, v: str) -> str:
         """Validate setting key."""
         # List of allowed settings that can be updated

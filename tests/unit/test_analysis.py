@@ -155,7 +155,6 @@ MIT
             assert analysis.repo_id == "test/dataset"
             assert analysis.quality_score > 0
 
-    @pytest.mark.skip(reason="generate_improvement_suggestions method not implemented")
     def test_compare_with_gold_standard(self, analyzer):
         """Test comparing with gold standard."""
         # Add a mock gold standard
@@ -204,7 +203,6 @@ class TestBaselineAnalyzerSectionParsing:
                 analyzer.poor_examples = {}
                 return analyzer
 
-    @pytest.mark.skip(reason="_parse_sections method not implemented")
     def test_parse_sections_from_readme(self, analyzer):
         """Test parsing sections from README."""
         readme = """# Dataset
@@ -221,7 +219,6 @@ MIT
         sections = analyzer._parse_sections(readme)
         assert len(sections) >= 3
 
-    @pytest.mark.skip(reason="_calculate_section_quality method not implemented")
     def test_calculate_section_quality(self, analyzer):
         """Test section quality calculation."""
         section = CardSection(
