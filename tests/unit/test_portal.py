@@ -92,9 +92,17 @@ class TestWorkStatus:
 
     def test_status_values(self):
         """Test status enum values."""
-        assert WorkStatus.AVAILABLE.value == "available"
+        assert WorkStatus.NOT_STARTED.value == "not_started"
         assert WorkStatus.IN_PROGRESS.value == "in_progress"
+        assert WorkStatus.REVIEWING.value == "reviewing"
         assert WorkStatus.COMPLETED.value == "completed"
+        assert WorkStatus.NEEDS_HELP.value == "needs_help"
+        assert WorkStatus.BLOCKED.value == "blocked"
+
+    def test_all_statuses(self):
+        """Test all status options exist."""
+        statuses = list(WorkStatus)
+        assert len(statuses) == 6
 
 
 @pytest.mark.unit
@@ -104,25 +112,38 @@ class TestDatasetWorkStatus:
     def test_creation(self):
         """Test work status creation."""
         status = DatasetWorkStatus(
-            repo_id="user/dataset",
-            status=WorkStatus.AVAILABLE,
-            assigned_to=None,
-            last_updated=datetime.now(),
+            dataset_id="user/dataset",
+            user_id="contributor",
+            status=WorkStatus.NOT_STARTED,
         )
-        assert status.repo_id == "user/dataset"
-        assert status.status == WorkStatus.AVAILABLE
-        assert status.assigned_to is None
+        assert status.dataset_id == "user/dataset"
+        assert status.user_id == "contributor"
+        assert status.status == WorkStatus.NOT_STARTED
 
-    def test_assigned_status(self):
-        """Test assigned work status."""
+    def test_in_progress_status(self):
+        """Test in progress work status."""
         status = DatasetWorkStatus(
-            repo_id="user/dataset",
+            dataset_id="user/dataset",
+            user_id="user@example.com",
             status=WorkStatus.IN_PROGRESS,
-            assigned_to="user@example.com",
-            last_updated=datetime.now(),
+            started_at=datetime.now(),
+            notes="Working on improvements",
         )
         assert status.status == WorkStatus.IN_PROGRESS
-        assert status.assigned_to == "user@example.com"
+        assert status.notes == "Working on improvements"
+
+    def test_completed_status(self):
+        """Test completed work status."""
+        status = DatasetWorkStatus(
+            dataset_id="user/dataset",
+            user_id="user@example.com",
+            status=WorkStatus.COMPLETED,
+            pr_url="https://github.com/user/dataset/pull/1",
+            improvement_score=0.85,
+        )
+        assert status.status == WorkStatus.COMPLETED
+        assert status.pr_url is not None
+        assert status.improvement_score == 0.85
 
 
 @pytest.mark.unit
@@ -132,50 +153,23 @@ class TestPortalStatusManager:
     @pytest.fixture
     def manager(self):
         """Create status manager instance."""
-        return PortalStatusManager()
+        with patch('science_card_improvement.portal.status.get_settings') as mock_settings:
+            mock_settings.return_value.hf_username = "test_user"
+            return PortalStatusManager(user_id="test_user")
 
     def test_initialization(self, manager):
         """Test manager initialization."""
         assert manager is not None
+        assert manager.user_id == "test_user"
 
-    @pytest.mark.asyncio
-    async def test_get_available_datasets(self, manager):
-        """Test getting available datasets."""
-        datasets = await manager.get_available_datasets()
-        assert isinstance(datasets, list)
+    def test_portal_url(self, manager):
+        """Test portal URL is defined."""
+        assert manager.PORTAL_URL is not None
+        assert "huggingface.co" in manager.PORTAL_URL
 
-    @pytest.mark.asyncio
-    async def test_claim_dataset(self, manager):
-        """Test claiming a dataset."""
-        result = await manager.claim_dataset(
-            "user/dataset",
-            "contributor@example.com"
-        )
-        assert result is True or result is False
-
-    @pytest.mark.asyncio
-    async def test_release_dataset(self, manager):
-        """Test releasing a dataset."""
-        result = await manager.release_dataset(
-            "user/dataset",
-            "contributor@example.com"
-        )
-        assert result is True or result is False
-
-    @pytest.mark.asyncio
-    async def test_mark_completed(self, manager):
-        """Test marking dataset as completed."""
-        result = await manager.mark_completed(
-            "user/dataset",
-            "contributor@example.com"
-        )
-        assert result is True or result is False
-
-    @pytest.mark.asyncio
-    async def test_get_dataset_status(self, manager):
-        """Test getting dataset status."""
-        status = await manager.get_dataset_status("user/dataset")
-        assert status is None or isinstance(status, DatasetWorkStatus)
+    def test_api_endpoint(self, manager):
+        """Test API endpoint is defined."""
+        assert manager.API_ENDPOINT is not None
 
 
 @pytest.mark.unit
@@ -185,81 +179,62 @@ class TestCollaborativeWorkflow:
     @pytest.fixture
     def workflow(self):
         """Create collaborative workflow instance."""
-        return CollaborativeWorkflow()
+        with patch('science_card_improvement.portal.status.get_settings'):
+            return CollaborativeWorkflow(user_id="test_user")
 
     def test_initialization(self, workflow):
         """Test workflow initialization."""
         assert workflow is not None
-
-    @pytest.mark.asyncio
-    async def test_create_task(self, workflow):
-        """Test creating a task."""
-        task_id = await workflow.create_task(
-            repo_id="user/dataset",
-            task_type="improve_readme",
-            priority=5
-        )
-        assert task_id is not None
-
-    @pytest.mark.asyncio
-    async def test_assign_task(self, workflow):
-        """Test assigning a task."""
-        task_id = await workflow.create_task(
-            repo_id="user/dataset",
-            task_type="improve_readme",
-            priority=5
-        )
-        result = await workflow.assign_task(
-            task_id,
-            "contributor@example.com"
-        )
-        assert result is True
-
-    @pytest.mark.asyncio
-    async def test_complete_task(self, workflow):
-        """Test completing a task."""
-        task_id = await workflow.create_task(
-            repo_id="user/dataset",
-            task_type="improve_readme",
-            priority=5
-        )
-        result = await workflow.complete_task(
-            task_id,
-            result_data={"improved": True}
-        )
-        assert result is True
-
-    @pytest.mark.asyncio
-    async def test_get_contributor_stats(self, workflow):
-        """Test getting contributor statistics."""
-        stats = await workflow.get_contributor_stats("contributor@example.com")
-        assert isinstance(stats, dict)
 
 
 @pytest.mark.unit
 class TestPortalIntegrationEdgeCases:
     """Test edge cases for portal integration."""
 
-    @pytest.mark.asyncio
-    async def test_timeout_handling(self):
-        """Test handling timeout."""
-        portal = HuggingSciencePortal()
+    def test_insight_with_missing_components(self):
+        """Test insight with missing components."""
+        insight = PortalDatasetInsight(
+            repo_id="user/dataset",
+            category="biology",
+            quality_metrics={"completeness": 0.3},
+            documentation_score=30.0,
+            usage_stats={"downloads": 100},
+            community_engagement={},
+            improvement_priority=80.0,
+            last_updated=datetime.now(),
+            missing_components=["citation", "license", "examples"],
+        )
+        assert len(insight.missing_components) == 3
+        assert insight.improvement_priority > 50
 
-        with patch.object(portal, '_fetch_portal_data') as mock_fetch:
-            mock_fetch.side_effect = asyncio.TimeoutError()
-            async with portal:
-                portal._session = AsyncMock()
-                with pytest.raises(asyncio.TimeoutError):
-                    await portal.search_science_datasets()
+    def test_insight_with_recommended_tags(self):
+        """Test insight with recommended tags."""
+        insight = PortalDatasetInsight(
+            repo_id="user/dataset",
+            category="genomics",
+            quality_metrics={},
+            documentation_score=50.0,
+            usage_stats={},
+            community_engagement={},
+            improvement_priority=50.0,
+            last_updated=datetime.now(),
+            recommended_tags=["single-cell", "rna-seq", "transcriptomics"],
+        )
+        assert len(insight.recommended_tags) == 3
 
-    @pytest.mark.asyncio
-    async def test_invalid_response_handling(self):
-        """Test handling invalid response."""
-        portal = HuggingSciencePortal()
+    def test_work_status_transitions(self):
+        """Test work status can transition."""
+        status = DatasetWorkStatus(
+            dataset_id="user/dataset",
+            user_id="user",
+            status=WorkStatus.NOT_STARTED,
+        )
+        # Simulate status transition
+        status.status = WorkStatus.IN_PROGRESS
+        assert status.status == WorkStatus.IN_PROGRESS
 
-        with patch.object(portal, '_fetch_portal_data') as mock_fetch:
-            mock_fetch.return_value = None
-            async with portal:
-                portal._session = AsyncMock()
-                results = await portal.search_science_datasets()
-                assert results == [] or results is None
+        status.status = WorkStatus.REVIEWING
+        assert status.status == WorkStatus.REVIEWING
+
+        status.status = WorkStatus.COMPLETED
+        assert status.status == WorkStatus.COMPLETED

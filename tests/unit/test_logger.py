@@ -90,7 +90,10 @@ class TestLoggerMixin:
         obj = TestClass()
         logger = obj.logger
         assert logger is not None
-        assert isinstance(logger, structlog.BoundLogger)
+        # structlog returns BoundLoggerLazyProxy which has logging methods
+        assert hasattr(logger, 'bind')
+        assert hasattr(logger, 'info')
+        assert hasattr(logger, 'error')
 
     def test_logger_cached(self):
         """Test logger is cached after first access."""

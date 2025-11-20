@@ -169,14 +169,14 @@ class TestCardGenerationError:
         assert exc.error_code == "CARD_GENERATION_ERROR"
         assert exc.details["repo_id"] == "user/dataset"
 
-    def test_with_template(self):
-        """Test card generation error with template."""
+    def test_with_reason(self):
+        """Test card generation error with reason."""
         exc = CardGenerationError(
             "Generation failed",
             repo_id="user/dataset",
-            template="comprehensive"
+            reason="Invalid template"
         )
-        assert exc.details["template"] == "comprehensive"
+        assert exc.details["reason"] == "Invalid template"
 
 
 @pytest.mark.unit
@@ -206,10 +206,10 @@ class TestPortalIntegrationError:
 
     def test_basic_creation(self):
         """Test basic portal integration error."""
-        exc = PortalIntegrationError("Portal error", portal_name="huggingface")
+        exc = PortalIntegrationError("Portal error", portal="huggingface")
         assert exc.message == "Portal error"
         assert exc.error_code == "PORTAL_INTEGRATION_ERROR"
-        assert exc.details["portal_name"] == "huggingface"
+        assert exc.details["portal"] == "huggingface"
 
 
 @pytest.mark.unit
