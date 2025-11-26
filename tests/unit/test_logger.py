@@ -307,3 +307,63 @@ class TestSetupLogging:
 
         # File should be created (may not contain data immediately due to buffering)
         assert log_file.parent.exists()
+
+
+@pytest.mark.unit
+class TestLoggerEdgeCases:
+    """Test edge cases for logger module."""
+
+    def test_custom_json_encoder_unsupported_type(self):
+        """Test CustomJSONEncoder fallback for unsupported types."""
+        encoder = CustomJSONEncoder()
+
+        # Use complex number which can't be JSON serialized
+        obj = complex(1, 2)
+
+        # Should raise TypeError from super().default()
+        with pytest.raises(TypeError):
+            encoder.default(obj)
+
+    def test_setup_logging_without_file_logging(self):
+        """Test setup_logging when file logging is disabled."""
+        with patch('science_card_improvement.utils.logger.get_settings') as mock_settings:
+            mock_settings.return_value.log_file_enabled = False
+            mock_settings.return_value.log_level = "INFO"
+            mock_settings.return_value.log_format = "console"
+            mock_settings.return_value.app_name = "Test App"
+
+            logger = setup_logging()
+
+            assert logger is not None
+
+    def test_setup_logging_with_default_log_path(self, tmp_path, monkeypatch):
+        """Test setup_logging when logs_dir is None."""
+        # Change to temp directory
+        monkeypatch.chdir(tmp_path)
+
+        with patch('science_card_improvement.utils.logger.get_settings') as mock_settings:
+            mock_settings.return_value.log_file_enabled = True
+            mock_settings.return_value.logs_dir = None  # This will trigger line 71
+            mock_settings.return_value.log_level = "INFO"
+            mock_settings.return_value.log_format = "console"
+            mock_settings.return_value.app_name = "Test App"
+
+            logger = setup_logging()
+
+            assert logger is not None
+            # Default logs directory should be created
+            assert (tmp_path / "logs").exists()
+
+    def test_request_logger_with_none_start_time(self):
+        """Test RequestLogger when start_time is None."""
+        mock_logger = MagicMock()
+
+        req_logger = RequestLogger(mock_logger, "test_operation")
+        req_logger.start_time = None  # Force None
+
+        # Exit context manager
+        req_logger.__exit__(None, None, None)
+
+        # Should log with duration_ms = 0
+        completion_call = mock_logger.info.call_args
+        assert completion_call[1]["duration_ms"] == 0

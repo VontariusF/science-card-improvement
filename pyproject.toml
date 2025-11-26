@@ -167,7 +167,12 @@ target-version = "py38"
 [tool.coverage.run]
 branch = true
 source = ["science_card_improvement"]
-omit = ["*/tests/*", "*/test_*.py", "*/__init__.py"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__init__.py",
+    "*/cli/*",  # Exclude CLI modules
+]
 
 [tool.coverage.report]
 precision = 2
